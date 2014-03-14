@@ -1,45 +1,99 @@
-/*  Este programa usa el timer 1 del arduino para hacer 2 notas simultáneas.
-  Modifica variables del timer para poder funcionar.
-Setup: 4 buzzers conectados a pins 2, 3, 4 y 5. No olvidar resistencias de pulldown (controlan corriente)
+/*  Este programa hace uso del timer 2 para reproducir varias notas simultáneas, y del
+  timer 1 para reproducir notas según su duración. La melodía de cada voz se ingresa en forma de string,
+  y debe cumplir cierta estructura.
+  
+  Setup: -4 buzzers conectados a pins 2, 3, 4 y 5. No olvidar resistencias para controlar corriente (330 ohms en este caso).
+         -2 leds en pins 11 y 12. No olvidar resistencias para controlar corriente (330 ohms en este caso).
 */
-#include "notas.h"
-/* Tener las notas en un arreglo ayuda a automatizar cálculos para otros valores importantes */
 
-/* Buzzers activos */
+#include <avr/pgmspace.h> //para almacenar constantes en memoria flash
+#define _BV(b) (1 << (b)) //para manejo directo de pins
 
-char index=0;
-/* Arreglo con 4 acordes*/
-//char* chords[][4]={{"C3","E4","G4","C5"},{"A3","C4","E4","A4"},{"F3","A3","C4","F4"},{"G3","B3","D4","G4"}};
 /* Tempo. Se admitirá por ahora desde 30 hasta 300*/
 const word tempo=200; 
+
+String voces[]={String("8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S//8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S"), //Voz 1
+                String("8A4 8A4 8S 8A4 8S 8A4 8A4 8S 8B4 8S 4S 8B3 4S 8S//8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S"), //Voz 2
+                String("8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8G4 8S 4S 8G3 4S 8S//8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S"), //Voz 3
+                String("8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8G3 8S 4S 8G2")};            //Voz 4
+                
+/* Buzzers activos */
+#define N_BUZZERS 3
+
+/* Número de pin para cada buzzer. Caben en 8 bits (un char) */
+char buzz[N_BUZZERS];
+
+/* Leds indicadores*/
+char rythmLed=11;
+char tempoLed=12;
+
+/* Contador para el led de tempo*/
+char tempoLedCounter=0;
+
+/* Toggle. Indica cuando enviar un Low o un High para cada buzzer.
+  Toma los valores LOW o HIGH, que equivalen a false o true*/
+boolean toggle[N_BUZZERS];
+
+/* Tener las notas en un arreglo ayuda a automatizar cálculos para otros valores importantes */
+             
+prog_uint16_t NOTAS[] PROGMEM={31,33,35,37,39,41,44,46,49,52,55,58, //12
+                               62,65,69,73,78,82,87,93,98,104,110,117,  //24
+                               123,131,139,147,156,165,175,185,196,208,220,233, //36
+                               247,262,277,294,311,330,349,370,392,415,440,466,  //48
+                               494,523,554,587,622,659,698,740,784,831,880,932,  //60
+                               988,1047,1109,1175,1245,1319,1397,1480,1568,1661,1760,1865,  //72
+                               1976,2093,2217,2349,2489,2637,2794,2960,3136,3322,3520,3729,  //84
+                               3951,4186,4435,4699,4978,0};  //90
+
+
 const int delaytempo=7500/(constrain((int)(tempo),30,300)); //Equivale a (60 * 1000/tempo)/8. El 8 sale de que la fusa será la unidad básica de tiempo, y es 1/8 de negra.
 
-String voces[]={String("8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4"), //Voz 1
-                String("8A4 8A4 8S 8A4 8S 8A4 8A4 8S 8B4 8S 4S 8B3"), //Voz 2
-                String("8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8G4 8S 4S 8G3"), //Voz 3
-                String("8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8G3 8S 4S 8G3")};            //Voz 4
-
-#define N_BUZZERS 4
-
-int NOTAS[]={NOTE_B0,NOTE_C1,NOTE_CS1,NOTE_D1,NOTE_DS1,NOTE_E1,NOTE_F1,NOTE_FS1,NOTE_G1,NOTE_GS1,NOTE_A1,NOTE_AS1, //12
-             NOTE_B1,NOTE_C2,NOTE_CS2,NOTE_D2,NOTE_DS2,NOTE_E2,NOTE_F2,NOTE_FS2,NOTE_G2,NOTE_GS2,NOTE_A2,NOTE_AS2, //24
-             NOTE_B2,NOTE_C3,NOTE_CS3,NOTE_D3,NOTE_DS3,NOTE_E3,NOTE_F3,NOTE_FS3,NOTE_G3,NOTE_GS3,NOTE_A3,NOTE_AS3, //36
-             NOTE_B3,NOTE_C4,NOTE_CS4,NOTE_D4,NOTE_DS4,NOTE_E4,NOTE_F4,NOTE_FS4,NOTE_G4,NOTE_GS4,NOTE_A4,NOTE_AS4, //48
-             NOTE_B4,NOTE_C5,NOTE_CS5,NOTE_D5,NOTE_DS5,NOTE_E5,NOTE_F5,NOTE_FS5,NOTE_G5,NOTE_GS5,NOTE_A5,NOTE_AS5, //60
-             NOTE_B5,NOTE_C6,NOTE_CS6,NOTE_D6,NOTE_DS6,NOTE_E6,NOTE_F6,NOTE_FS6,NOTE_G6,NOTE_GS6,NOTE_A6,NOTE_AS6, //72
-             NOTE_B6,NOTE_C7,NOTE_CS7,NOTE_D7,NOTE_DS7,NOTE_E7,NOTE_F7,NOTE_FS7,NOTE_G7,NOTE_GS7,NOTE_A7,NOTE_AS7, //84
-             NOTE_B7,NOTE_C8,NOTE_CS8,NOTE_D8,NOTE_DS8,0}; //90
-
-/* Nota. Tiene la nota que tocará cada buzzer. En realidad, posee el subíndice a la nota
-asociada del arreglo de notas. 8 bits bastan, por lo que cabe en un char.*/
+/* Nota. Tiene la nota en forma de String que tocará cada buzzer*/
 String nota[]={"S", "S", "S", "S"};
 
 /* Duracion. Cada nota tiene una duración asociada. Este es un contador para cada nota.
-  Cuando se haga 0 para una nota, se le carga la siguiente nota.*/
+  Cuando se acabe la duración de una nota para alguna voz, se le carga la siguiente nota.*/
 unsigned char duracion[]={0,0,0,0};
 
+/* Arreglo con los períodos de cada nota en el buzzer, en microsegundos */
+int NOTAS_P[N_BUZZERS];
+const char mcd=30; //Propuesto por Jeremy Blum: 64. Se obligará a los períodos a ser un múltiplo de esto
+//ha funcionado bien para 71. Probando con 30, que es más preciso.
+
+/* Inicializador de los períodos */
+void initNotas_p(){
+  for (char i=0;i<N_BUZZERS;i++){
+    int progint2int=pgm_read_word_near(NOTAS + parseNota(nota[i]));//NOTAS[parseNota(nota[i])];//
+    int periodo=(int)(500000.0/progint2int);//nota[i])]); //periodo real de cada nota
+    NOTAS_P[i]=periodo + ((periodo%mcd)<=(mcd/2) ? -(periodo%mcd) : (mcd-(periodo%mcd)));     //nuevo período es múltiplo de 64 más cercano al período original
+  }
+}
+
+/* Count. Lleva la cuenta de ticks para cada buzzer. Números pequeños, 
+  caben en un char, pero si se usa char, por alguna razón no funcionan los
+  silencios. Ojo, estos valores son VARIABLES.*/
+unsigned int count[N_BUZZERS];
+
+/* Cantidad de cuentas por cada nota. El máximo es 252 asi que cabe en 8 bits.
+  Las cuentas son el período total dividido por el tiempo que se demora en reiniciar el contador
+  del timer. Como se quiere que el timer se demore "mcd" microsegundos (y se forzará que esto
+  se cumpla), cuentas es período/mcd. Ojo, estos valores son CONSTANTES.
+*/
+unsigned char counts[N_BUZZERS];
+
+/* Inicializador de las cuentas para cada nota de cada voz*/
+void initCounts(){
+  for (char i=0;i<N_BUZZERS;i++){
+    counts[i]=NOTAS_P[i]/mcd;
+    count[i]=0;
+  }
+}
+
 char parseNota(String s){
-  if (s[0]=='S') return 89;
+  if (s[0]=='S') {
+    digitalWrite(rythmLed,LOW);
+    return 89;
+  }
   /* recibe un string con el nombre de la nota y retorna su posición en el arreglo de notas.
    Se asumirá que los inputs son correctos*/
   
@@ -50,10 +104,11 @@ char parseNota(String s){
     donde X en {A, B, C, D, E, F}
           Y en {0,1,2,3,4,5,6,7,8}
   
-  Notar que: el número fija particiones de tamaño 12. El 1 envía a la primera, y
+  Notar que: el número fija particiones de tamaño 12. El 1 envía a la primera partición, y
   así sucesivamente. La letra (y su sostenido siesque tiene) ubica la nota dentro de
-  la partición.*/
-  /* Recordando que A=65, ..., G=71: */
+  cada partición.*/
+  /* Recordando que A=65, ..., G=71 en ASCII: */
+  digitalWrite(rythmLed,HIGH);
   char pos;
   if (s[1]!='S'){//era natural, sin sostenido
     switch (s[0]){
@@ -81,65 +136,29 @@ char parseNota(String s){
     }
   }
   else{
-    switch (s[0]){
-      case 65: //AS
+    switch (s[0]){ //era nota sostenida
+      case 65: //A#
         pos=10;
         break;
-      //no existe BS
-      case 67: //CS
+      //no existe B#
+      case 67: //C#
         pos=1;
         break;
-      case 68: //DS
+      case 68: //D#
         pos=3;
         break;
-      //no existe ES
-      case 70: //FS
+      //no existe E#
+      case 70: //F#
         pos=6;
         break;
-      case 71: //GS
+      case 71: //G#
         pos=8;
         break;
     }
   }
-  /* Ojo que la partición la define s[largo-1]*/
+  /* Fórmula mágica que retorna el subíndice del arreglo de notas según el nombre de la nota*/
   return (((s[(s[1]=='S') ? 2 : 1]-1) - '0')*12)+1+pos;
 }
-/* Arreglo con los períodos de cada nota en el buzzer, en microsegundos */
-int NOTAS_P[N_BUZZERS];
-const char mcd=30; //Propuesto por Jeremy Blum: 64. Se obligará a los períodos a ser un múltiplo de esto
-//ha funcionado bien para 71. Probando con 30, que es más preciso.
-/* Inicializador de los períodos */
-void initNotas_p(){
-  for (char i=0;i<N_BUZZERS;i++){
-    int periodo=(int)(500000.0/NOTAS[parseNota(nota[i])]);//nota[i])]); //periodo real de cada nota
-    NOTAS_P[i]=periodo + ((periodo%mcd)<=(mcd/2) ? -(periodo%mcd) : (mcd-(periodo%mcd)));     //nuevo período es múltiplo de 64 más cercano al período original
-  }
-}
-
-/* Count. Lleva la cuenta de ticks para cada buzzer. Números pequeños, 
-  caben en un char, pero si se usa char, por alguna razón no funcionan los
-  silencios.*/
-unsigned int count[N_BUZZERS];
-
-/* Cantidad de cuentas por cada nota. El máximo es 252 asi que cabe en 8 bits.
-  Las cuentas son el período total dividido por el tiempo que se demora en reiniciar el contador
-  del timer. Como se quiere que el timer se demore "mcd" microsegundos (y se forzará que esto
-  se cumpla), cuentas es período/mcd.
-*/
-unsigned char counts[N_BUZZERS];
-void initCounts(){
-  for (char i=0;i<N_BUZZERS;i++){
-    counts[i]=NOTAS_P[i]/mcd;
-    count[i]=0;
-  }
-}
-
-/* Número de pin para cada buzzer. Caben en 8 bits */
-char buzz[N_BUZZERS];
-
-/* Toggle. Indica cuando enviar un Low o un High para cada buzzer.
-  Toma los valores LOW o HIGH, que equivalen a false o true*/
-boolean toggle[N_BUZZERS];
 
 void initTimer1(){
   /* Desactivar interrupciones por overflow del contador*/
@@ -192,8 +211,10 @@ void initBuzzers(){
 }
 
 void parseTunes(){
-  /* Agrega marcador de final del texto y obtiene cantidad de notas*/
+  /* Agrega marcador de final del texto*/
   for (char i=0; i<N_BUZZERS; i++){
+    voces[i].replace("//"," ");
+    voces[i].trim();
     voces[i]="8S "+voces[i]+" X";
   }
 }
@@ -202,6 +223,9 @@ void parseTunes(){
 ISR(TIMER1_COMPA_vect){
   /* Actualizar notas*/
   update();
+  /* Comportamiento del led de tempo*/
+  digitalWrite(tempoLed,(tempoLedCounter==3 ? HIGH : LOW));
+  tempoLedCounter=(tempoLedCounter+1)%8;
 }
 
 /* Definición del handler de interrupciones del timer 2: ISR (Interrupt Service Routine)*/
@@ -212,7 +236,9 @@ ISR(TIMER2_COMPA_vect){
     count[i]++;
     if (count[i] == counts[i]){
       toggle[i]=~toggle[i];
-      digitalWrite(buzz[i], toggle[i]);
+      //digitalWrite(buzz[i], toggle[i]);
+      //sbi(PINB,buzz[i]);
+      PORTD ^= (_BV(buzz[i])); //digitalWrite más rápido
       count[i]=0;
     }
   }
@@ -231,55 +257,65 @@ String getNext(char voz){//voz es el número de la voz. Retorna siguiente nota a
 
 void seteaNota(String snota, char voz){
   /* Setea la nota "nota" en la voz "voz".
-  º
     Ojo que la nota viene en un formato del tipo AB(S)C que hay que
     separar en A y B(S)C. Ojo que A puede tener 1 o 2 dígitos.*/
-  /* Obtengo duración y la seteo. Notar que duración de 32 vale 1, 16-> 2, 8->4, 4->8, 2->16, 1->32*/
+    
   if (snota[0]=='X'){//Si ya no quedan notas, rellenar con silencios para siempre.
     nota[voz]="S";
     duracion[voz]=32;
   }
   else{
+    /* Establecer duración. Notar que duración de 32 vale 1, 16-> 2, 8->4, 4->8, 2->16, 1->32*/
     String numbers="26"; //caso 16 y 32
     int fin = (numbers.indexOf(snota[1])==-1) ? 1 : 2; //si tiene 2 digitos vale 2. 1 en caso contrario.
     int d=32/(snota.substring(0,fin).toInt());
     duracion[voz]=d;
+    
+    /* Establecer la nota*/
     snota=snota.substring(fin); //borra la duración del string para quedar solo con la nota.
-    //Serial.println(String(String("Revisando voz "))+voz);
-    //Serial.println(String(String("Antes de asignar: nota[0]=")+nota[0]+String(", nota[1]=")+nota[1]));
     nota[voz]=snota;
-    //Serial.println(String(String("Despues de asignar: nota[0]=")+nota[0]+String(", nota[1]=")+nota[1]));
   }
   /* Se ha actualizado la nota de la voz correspondiente*/
 }
-void loadVoices(){
+boolean loadVoices(){
   /* Leer las duraciones para cada voz. Si el contador es 0, leer la siguiente nota*/
+  /*si ninguna voz cambiaba, sigue todo igual */
+  boolean changed=false;
   for (char i=0; i<N_BUZZERS; i++){
     if (duracion[i]<=1){
+      changed=true;
       seteaNota(getNext(i),i);
     }
     else duracion[i]--;//si la duración no se ha acabado, seguir con la misma nota en esa voz
   }
-  
+  return changed;
 }
 
 void update(){
-  loadVoices();
-  initNotas_p();
-  initCounts();
+  if (loadVoices()){
+    initNotas_p();
+    initCounts();
+  }
   //Serial.println(String(String("nota[0]=")+nota[0]+String(", duracion[0]=")+duracion[0]));
 }
 
+void initLeds(){
+  pinMode(rythmLed,OUTPUT);
+  pinMode(tempoLed,OUTPUT);
+}
+
 void setup(){
-  //Serial.begin(9600);
-  //Serial.read();
+  
+  
   /* Preparar los strings de cada voz para procesar*/
   parseTunes();
   /* Establecer pins de buzzers como salida*/
   initBuzzers();
+  /* Preparar leds indicadores*/
+  initLeds();
   /* Cargar notas de voces en las notas actuales, calcular períodos de notas para poder
   reproducirlas y preparar duracion de cada nota*/
-  //Serial.println(String(String("nota[0]=")+nota[0]+String(", duracion[0]=")+duracion[0]));
+  //loadVoices();
   update();
   /* Inicializar timers para reproducir notas*/
   cli();
@@ -289,8 +325,6 @@ void setup(){
 }
 
 void loop(){
-  /*update();
-  delay(delaytempo);*/
 }
 
 
@@ -345,4 +379,30 @@ poder implementarse como frecuencias nulas. Silencios implementados
   Estos son los posibles tiempos que puede quererse para los interrupts. Si se usa un prescaler de 64, 
   se ve que se necesitan 6250 clicks y para 250ms 62500. Convendría usar el timer 1 que cubre estos
   valores por ser de 16 bits.
+  
+  -Se implementa con timer 1 en vez de delays en el loop. Los silencios siguen de todas maneras.
+  Explicación: Si bien el timer 1 y el 2 son independientes entre sí, cada vez que ocurre una interrupción
+  por el timer 1, el timer 2 pierde la cpu por las instrucciones que debe ejecutar el procesador por la
+  interrupción del timer 1. Luego, la idea sería ejecutar cosas sólo cuando las notas cambien.
+  Estrategia actual de detección de cambios de notas: interrupciones cada fusa. Cada nota tiene una duración
+  definida por la cantidad de fusas que caben en su tempo. 
+  El problema es que ahora, aunque NINGUNA nota cambie, se está evaluando la duración de cada nota y ejecutando varias instrucciones.
+  La interrupción debería saber cuándo ejecutar realmente update. La idea es que sólo se ejecute cuando alguna nota
+  debe cambiar. 
+  Comprobado: funciona la continuidad del sonido aunque haya que evaluar un if.
+  SOLUCIONADO
+  
+  Problema: ruidos extraños al terminar reproducción, y a veces en medio de la reproducción.
+    Detalles: -Ocurre sólo cuando la melodía se hace larga. Si es corta, de a tres suenan perfecto.
+              -Si agrego otra voz, crece la cantidad de datos y vuelve el ruido.
+              
+  IDENTIFICADO: El problema se produce por poca memoria RAM. Es posible ocupar la memoria flash PROGMEM, donde
+    se almacena el programa. Esta memoria es mucho más grande que la memoria RAM. Un gran contra de usar esta
+    memoria es que solo se almacenan valores constantes, y la implementación actual necesita hacer variar el
+    texto de las voces. Para implementarel programa usando memoria flash, se debe redefinir los algoritmos
+    de parseo del texto de las voces, dado que además hay limitados tipos de datos para la memoria flash, y
+    String no es uno de ellos, aunque char si lo es. Luego, se pierden valiosos métodos para trabajar strings.
+--Guardando versión actual 3.0 en respaldo de versiones--
+    
+         
     .*/
