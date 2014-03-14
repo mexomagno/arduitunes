@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ArduiTunes</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="description" content="Make some music and play it on Max's ArduiTunes Project!"/>
+		<meta name="author" content="Maximiliano Castro D."/>
+		<link rel="stylesheet" href="estilos.css" type="text/css">
+		<script type="text/javascript" src="scripts.js"></script>
+	<style>
+		td{
+			width: 240px;
+		}
+	</style>
+	</head>
+	<body onload="init();">
+		<div id="contenido">
+			<h3 id="titulo">ArduiTunes</h3>
+			<div id="cuadro_blanco">
+				<table style="margin-left:auto; margin-right:auto;">
+				<tr>
+					<td><a class="boton" id="boton_bajar" onClick="bajar();">&lt;Lower</a></td>
+					<td><div class="octava_num" id="octava1"></div></td>
+					<td><div class="octava_num" id="octava2"></div></td>
+					<td><a class="boton" id="boton_subir" onclick="subir();">Higher&gt;</a></td>
+				</tr>
+				</table>
+				<div id="teclado">
+					<a class="tecla_blanca" onClick="addNota('C',0)"></a>
+					<a class="tecla_negra" onClick="addNota('CS',0)"></a>
+					<a class="tecla_blanca" onClick="addNota('D',0)"></a>
+					<a class="tecla_negra" onClick="addNota('DS',0)"></a>
+					<a class="tecla_blanca" onClick="addNota('E',0)"></a>
+					<a class="blank"></a>
+					<a class="tecla_blanca" onClick="addNota('F',0)"></a>
+					<a class="tecla_negra" onClick="addNota('FS',0)"></a>
+					<a class="tecla_blanca" onClick="addNota('G',0)"></a>
+					<a class="tecla_negra" onClick="addNota('GS',0)"></a>
+					<a class="tecla_blanca" onClick="addNota('A',0)"></a>
+					<a class="tecla_negra" onClick="addNota('AS',0)"></a>
+					<a class="tecla_blanca" onClick="addNota('B',0)"></a>
+					<a class="blank"></a>
+					<a class="tecla_blanca" onClick="addNota('C',1)"></a>
+					<a class="tecla_negra" onClick="addNota('CS',1)"></a>
+					<a class="tecla_blanca" onClick="addNota('D',1)"></a>
+					<a class="tecla_negra" onClick="addNota('DS',1)"></a>
+					<a class="tecla_blanca prohibida" onClick="addNota('E',1)"></a>
+					<a class="blank"></a>
+					<a class="tecla_blanca prohibida" onClick="addNota('F',1)"></a>
+					<a class="tecla_negra prohibida" onClick="addNota('FS',1)"></a>
+					<a class="tecla_blanca prohibida" onClick="addNota('G',1)"></a>
+					<a class="tecla_negra prohibida" onClick="addNota('GS',1)"></a>
+					<a class="tecla_blanca prohibida" onClick="addNota('A',1)"></a>
+					<a class="tecla_negra prohibida" onClick="addNota('AS',1)"></a>
+					<a class="tecla_blanca prohibida" onClick="addNota('B',1)"></a>
+					
+					<div id="undo_wrap" style="float: right;"><div id="undo" onClick="undo();">BORRAR</div></div>
+					<div id="dummy"></div>
+					<div style="clear:both;"></div>
+				</div><!--teclado-->
+				<table id="tabla_botones_duracion"></table>
+				<table id="tabla_voces"></table>
+				<div id="display_notas_wrap">Previsualización: <br><div id="display_notas"></div></div>
+				<br>
+				<div id="generar" onClick="generar();">¡¡¡Generar!!!</div>
+				<div id="textarea_wrap" style="display: none;">
+					<br><br>
+					¡Copia y pega en el proyecto arduino!<br>
+					<pre><div id="texto"></div></pre>
+				</div>
+			</div>
+			<!--<div id="mensajes"></div>
+			<a href="https://www.google.cl">Salir</a>-->
+		</div><!--contenido-->
+	</body>
+</html>
