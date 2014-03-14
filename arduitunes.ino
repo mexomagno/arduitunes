@@ -9,14 +9,17 @@
 #include <avr/pgmspace.h> //para almacenar constantes en memoria flash
 #define _BV(b) (1 << (b)) //para manejo directo de pins
 
-/* Tempo. Se admitirá por ahora desde 30 hasta 300*/
-const word tempo=200; 
+/* Tempo. Se admitirá por ahora desde 30 hasta 400*/
+const word tempo=200;
 
-String voces[]={String("8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S//8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S"), //Voz 1
-                String("8A4 8A4 8S 8A4 8S 8A4 8A4 8S 8B4 8S 4S 8B3 4S 8S//8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S"), //Voz 2
-                String("8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8G4 8S 4S 8G3 4S 8S//8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S"), //Voz 3
-                String("8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8G3 8S 4S 8G2")};            //Voz 4
-                
+                         //comiemzo                                       // primera parte con repeticion                                                                      //aca se repite                                                                                       //"coro" A con repeticion                                                                                    //segunda mitad                                                                            //repite coro A                                                                                                                                                                                        //intermedio que vuelve a la intro                                                                                                                                                                  //Acá repite la intro                                                                                                                                                                                    //Hasta acá me dejó componer el Arduino, después Java lanzaba StackOverflow :(
+PROGMEM prog_char voz1[]={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S X"};//8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8A5 8S 8A5 8A5 8G5 8S 8F5 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 X"};
+PROGMEM prog_char voz2[]={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8B4 8S 4S 8B3 4S 8S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 4S 8S 8D4 8S 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 X"};// 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8F4 8S 8F4 8E4 8S 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8D5 8S 8D5 8D5 8C5 8S 8B4 8G4 8E4 8S 8E4 8C4 X"};
+PROGMEM prog_char voz3[]={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 4S 8S 8G3 8S 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 X"}; // 4S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8D3 4S 8F3 8G3 8S 8A3 8S 8G3 8S 8G3 8S 8C4 8C4 8G3 8S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8G3 4S 8G3 8G3 8A3 8S 8B3 8C4 8S 8G3 8S 8C3 X"};
+PROGMEM prog_char voz4[]={""};
+
+PROGMEM const char* voces[]={voz1,voz2,voz3,voz4};
+
 /* Buzzers activos */
 #define N_BUZZERS 3
 
@@ -30,10 +33,6 @@ char tempoLed=12;
 /* Contador para el led de tempo*/
 char tempoLedCounter=0;
 
-/* Toggle. Indica cuando enviar un Low o un High para cada buzzer.
-  Toma los valores LOW o HIGH, que equivalen a false o true*/
-boolean toggle[N_BUZZERS];
-
 /* Tener las notas en un arreglo ayuda a automatizar cálculos para otros valores importantes */
              
 prog_uint16_t NOTAS[] PROGMEM={31,33,35,37,39,41,44,46,49,52,55,58, //12
@@ -46,7 +45,7 @@ prog_uint16_t NOTAS[] PROGMEM={31,33,35,37,39,41,44,46,49,52,55,58, //12
                                3951,4186,4435,4699,4978,0};  //90
 
 
-const int delaytempo=7500/(constrain((int)(tempo),30,300)); //Equivale a (60 * 1000/tempo)/8. El 8 sale de que la fusa será la unidad básica de tiempo, y es 1/8 de negra.
+const int delaytempo=7500/(constrain((int)(tempo),30,400)); //Equivale a (60 * 1000/tempo)/8. El 8 sale de que la fusa será la unidad básica de tiempo, y es 1/8 de negra.
 
 /* Nota. Tiene la nota en forma de String que tocará cada buzzer*/
 String nota[]={"S", "S", "S", "S"};
@@ -54,6 +53,16 @@ String nota[]={"S", "S", "S", "S"};
 /* Duracion. Cada nota tiene una duración asociada. Este es un contador para cada nota.
   Cuando se acabe la duración de una nota para alguna voz, se le carga la siguiente nota.*/
 unsigned char duracion[]={0,0,0,0};
+
+/* Buffer. Acá se cargará cada nota desde PROGMEM, para cada voz, una por una.
+  Ojo que cabe sólo una nota a la vez. Su tamaño se fija dado que es el máximo
+  tamaño que puede tener en texto cualquier nota. (Ejemplo: 16CS5 es de tamaño máximo)
+  Notar que debe existir también un fin de caracter "\0".*/
+
+char buffer[6];
+
+/* Head. Cabezales de cada voz que indica dónde quedó la última lectura.*/
+int head[]={0,0,0,0};
 
 /* Arreglo con los períodos de cada nota en el buzzer, en microsegundos */
 int NOTAS_P[N_BUZZERS];
@@ -91,7 +100,7 @@ void initCounts(){
 
 char parseNota(String s){
   if (s[0]=='S') {
-    digitalWrite(rythmLed,LOW);
+    PORTB &= ~(_BV(rythmLed-8));
     return 89;
   }
   /* recibe un string con el nombre de la nota y retorna su posición en el arreglo de notas.
@@ -108,7 +117,7 @@ char parseNota(String s){
   así sucesivamente. La letra (y su sostenido siesque tiene) ubica la nota dentro de
   cada partición.*/
   /* Recordando que A=65, ..., G=71 en ASCII: */
-  digitalWrite(rythmLed,HIGH);
+  PORTB |= _BV(rythmLed-8);
   char pos;
   if (s[1]!='S'){//era natural, sin sostenido
     switch (s[0]){
@@ -210,22 +219,13 @@ void initBuzzers(){
   }
 }
 
-void parseTunes(){
-  /* Agrega marcador de final del texto*/
-  for (char i=0; i<N_BUZZERS; i++){
-    voces[i].replace("//"," ");
-    voces[i].trim();
-    voces[i]="8S "+voces[i]+" X";
-  }
-}
-
 /* Definición del handler de interrupciones del timer 1: ISR (Interrupt Service Routine)*/
 ISR(TIMER1_COMPA_vect){
+  /* Comportamiento del led de tempo*/
+  PORTB = (tempoLedCounter==7 ? PORTB | _BV(tempoLed -8) : PORTB & ~(_BV(tempoLed-8)));
+  tempoLedCounter=((tempoLedCounter+1)%8);
   /* Actualizar notas*/
   update();
-  /* Comportamiento del led de tempo*/
-  digitalWrite(tempoLed,(tempoLedCounter==3 ? HIGH : LOW));
-  tempoLedCounter=(tempoLedCounter+1)%8;
 }
 
 /* Definición del handler de interrupciones del timer 2: ISR (Interrupt Service Routine)*/
@@ -235,45 +235,89 @@ ISR(TIMER2_COMPA_vect){
   for (char i=0; i<N_BUZZERS; i++){
     count[i]++;
     if (count[i] == counts[i]){
-      toggle[i]=~toggle[i];
-      //digitalWrite(buzz[i], toggle[i]);
-      //sbi(PINB,buzz[i]);
       PORTD ^= (_BV(buzz[i])); //digitalWrite más rápido
       count[i]=0;
     }
   }
 }
 
-String getNext(char voz){//voz es el número de la voz. Retorna siguiente nota a tocar en formato de String. Ej: "8CS4"
-  /* Identificar hasta dónde llega la nota*/
-  char separator=voces[voz].indexOf(' ');
-  /* Obtener la nota*/
-  String newnota=voces[voz].substring(0,separator);
-  /* Quitar nota del resto de las notas*/
-  voces[voz]=voces[voz].substring(separator+1);
-  return newnota;
-  
+void getNext(char voz){
+  /* Obtiene siguiente nota de la voz especificada y la sitúa en el buffer*/
+  if  (head[voz]==-1){
+    buffer[0]='X';
+    buffer[1]='\0';
+  }
+  else{
+    /* obtengo puntero a string de la voz, en PROGMEM*/
+    PGM_P prog_str=(prog_char*)pgm_read_word(&(voces[voz]));
+    /* iterador para caracteres*/
+    char j=0;
+    
+    /* ve cuando se acaba la melodía*/
+    boolean fin=false;
+    /* recorrer cada caracter*/
+    while (((buffer[j]=(char) pgm_read_byte(&prog_str[head[voz]+j]))!= ' ')){
+      if (buffer[j]=='X'){
+        fin=true;
+        break;
+      }
+      j++;
+    }
+    if (fin){
+      head[voz]=-1;
+      buffer[1]='\0';
+    }
+    else{
+      head[voz]+=(j+1);
+      buffer[j]='\0';
+    }
+  }
+}
+boolean melodyOver(){
+  char c=0;
+  for (int i=0;i<N_BUZZERS;i++){
+    c+=head[i];
+  }
+  return (c==(N_BUZZERS*-1))? true : false;
 }
 
-void seteaNota(String snota, char voz){
-  /* Setea la nota "nota" en la voz "voz".
+void endProgram(){
+  cli();
+  TIMSK1 &= ~(1<<OCIE1A);
+  TIMSK2 &= ~(1<<OCIE2A);
+  sei();
+  digitalWrite(rythmLed,HIGH);
+  digitalWrite(tempoLed,HIGH);
+}
+void seteaNota(char voz){
+  /* Setea la nota en el buffer en la voz "voz".
     Ojo que la nota viene en un formato del tipo AB(S)C que hay que
     separar en A y B(S)C. Ojo que A puede tener 1 o 2 dígitos.*/
-    
-  if (snota[0]=='X'){//Si ya no quedan notas, rellenar con silencios para siempre.
+  if (buffer[0]=='X'){//Si ya no quedan notas, rellenar con silencios para siempre.
     nota[voz]="S";
     duracion[voz]=32;
+    if (melodyOver()){
+      endProgram();
+    }
   }
   else{
     /* Establecer duración. Notar que duración de 32 vale 1, 16-> 2, 8->4, 4->8, 2->16, 1->32*/
     String numbers="26"; //caso 16 y 32
-    int fin = (numbers.indexOf(snota[1])==-1) ? 1 : 2; //si tiene 2 digitos vale 2. 1 en caso contrario.
-    int d=32/(snota.substring(0,fin).toInt());
+    int d;
+    boolean dosdig=false; //true si la duración tenia 2 dígitos-
+    if (numbers.indexOf(buffer[1])!=-1){//si la duración tiene 2 dígitos (16, 32)
+      d=32/((buffer[0]-'0')*10 + (buffer[1]-'0'));
+      dosdig=true;
+    }
+    else
+      d=32/(buffer[0]-'0');
     duracion[voz]=d;
     
     /* Establecer la nota*/
-    snota=snota.substring(fin); //borra la duración del string para quedar solo con la nota.
-    nota[voz]=snota;
+    char j=dosdig ? 2 : 1; //se para en la posición de la nota
+    //copiar el texto que representa a la nota
+    nota[voz]=buffer;
+    nota[voz]=nota[voz].substring(j);
   }
   /* Se ha actualizado la nota de la voz correspondiente*/
 }
@@ -284,7 +328,10 @@ boolean loadVoices(){
   for (char i=0; i<N_BUZZERS; i++){
     if (duracion[i]<=1){
       changed=true;
-      seteaNota(getNext(i),i);
+      /* Situar en el buffer la nota a situar*/
+      getNext(i);
+      /* Situa desde el buffer la nota en la voz que le corresponde*/
+      seteaNota(i);
     }
     else duracion[i]--;//si la duración no se ha acabado, seguir con la misma nota en esa voz
   }
@@ -296,26 +343,21 @@ void update(){
     initNotas_p();
     initCounts();
   }
-  //Serial.println(String(String("nota[0]=")+nota[0]+String(", duracion[0]=")+duracion[0]));
 }
 
 void initLeds(){
   pinMode(rythmLed,OUTPUT);
   pinMode(tempoLed,OUTPUT);
+  digitalWrite(tempoLed,HIGH);
 }
 
 void setup(){
-  
-  
-  /* Preparar los strings de cada voz para procesar*/
-  parseTunes();
   /* Establecer pins de buzzers como salida*/
   initBuzzers();
   /* Preparar leds indicadores*/
   initLeds();
   /* Cargar notas de voces en las notas actuales, calcular períodos de notas para poder
   reproducirlas y preparar duracion de cada nota*/
-  //loadVoices();
   update();
   /* Inicializar timers para reproducir notas*/
   cli();
@@ -325,6 +367,8 @@ void setup(){
 }
 
 void loop(){
+  /* Libre para hacer cualquier otra cosa. Ojo que el timer 0 sigue libre, y por ende
+  funcionan cosas como delay(), millis(), etc. */
 }
 
 
@@ -404,5 +448,15 @@ poder implementarse como frecuencias nulas. Silencios implementados
     String no es uno de ellos, aunque char si lo es. Luego, se pierden valiosos métodos para trabajar strings.
 --Guardando versión actual 3.0 en respaldo de versiones--
     
-         
+    Se implementa versión con almacenamiento en PROGMEM y se solucionan los problemas descritos
+
+
+Proyecto terminado. Única limitante hasta ahora es el largo posible de los strings. A partir de cierto largo, Java 
+lanza StackOverflow. 
+
+Ideas para el futuro: 
+    -Con un opamp hacer un sumador y reproducir los sonidos en una única salida de audio, ya sea a un 
+    parlante o a audífonos.
+    -Implementar parseo de repeticiones, para no tener que copiar pegar todo un bloque. Ejemplo: "||:4C4 4D4 4E4 4F4:||4C4 X".
+    -Implementar tresillos.
     .*/
