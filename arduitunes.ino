@@ -10,13 +10,31 @@
 #define _BV(b) (1 << (b)) //para manejo directo de pins
 
 /* Tempo. Se admitirá por ahora desde 30 hasta 400*/
-const word tempo=200;
+word tempo=200;
 
-                         //comiemzo                                       // primera parte con repeticion                                                                      //aca se repite                                                                                       //"coro" A con repeticion                                                                                    //segunda mitad                                                                            //repite coro A                                                                                                                                                                                        //intermedio que vuelve a la intro                                                                                                                                                                  //Acá repite la intro                                                                                                                                                                                    //Hasta acá me dejó componer el Arduino, después Java lanzaba StackOverflow :(
-PROGMEM prog_char voz1[]={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S X"};//8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8A5 8S 8A5 8A5 8G5 8S 8F5 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 X"};
-PROGMEM prog_char voz2[]={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8B4 8S 4S 8B3 4S 8S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 4S 8S 8D4 8S 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 X"};// 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8F4 8S 8F4 8E4 8S 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8D5 8S 8D5 8D5 8C5 8S 8B4 8G4 8E4 8S 8E4 8C4 X"};
-PROGMEM prog_char voz3[]={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 4S 8S 8G3 8S 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 X"}; // 4S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8D3 4S 8F3 8G3 8S 8A3 8S 8G3 8S 8G3 8S 8C4 8C4 8G3 8S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8G3 4S 8G3 8G3 8A3 8S 8B3 8C4 8S 8G3 8S 8C3 X"};
-PROGMEM prog_char voz4[]={""};
+/* Definición de melodías. 
+    Detalles importantes:  -NO puede contener errores. Cualquier error hará que el programa se comporte raro.
+                           -Notación: cada nota se escribe como ABC, donde A en {1, 2, 4, 8, 16, 32} representa la duración de la nota (redonda, blanca, negra, corchea, semicorchea, fusa)
+                                                                           B en {C, CS, D, DS, E, F, FS, G, GS, A, AS, B, S} representa la nota. Las notas con sufijo "S" son sostenidas (CS == C#) La S es un silencio.
+                                                                           C en {1, 2, 3, 4, 5, 6, 7, 8} representa la octava de la nota. El LA = 440Hz se encuentra en octava 4 (es A4). El silencio no necesita este valor.
+                           -Al final de cada melodía se debe terminar con el caracter X, anteponiendo un espacio al mismo. Ejemplo: "4C3 X".
+                           -Las repeticiones se hacen dentro de un bloque encerrado por " ||: " y " :|| " en ese orden. Notar los espacios. Ejemplo: "4C4 ||: 4C4 4A3 4F3 4G3 :|| X"
+                           -NO se puede anidar repeticiones. NO es válido cosas como "||: 4C4 ||: 4G4 :|| :|| X".
+                           */
+                           
+/* SUPER MARIO*/
+                         //comiemzo                                          // primera parte                                                                                             //"coro" A                                                                                                                                                                                                   //intermedio que vuelve a la intro                                                                                                                                                                  //Acá repite la intro                                                                                         //Coro B
+PROGMEM prog_char voz1[]={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| ||: 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S :|| 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| ||: 8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8A5 8S 8A5 8A5 8G5 8S 8F5 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8S 4S 2S :|| X"};//8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S X"};
+PROGMEM prog_char voz2[]={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 8S 4S 8B3 4S 8S ||: 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8C5 8S 8A4 8G4 8G4 4S :|| ||: 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S :|| 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 4S 8S 8D4 8S 4S ||: 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S :|| ||: 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8F4 8S 8F4 8E4 8S 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8D5 8S 8D5 8D5 8C5 8S 8B4 8G4 8E4 8S 8E4 8C4 8S 4S :|| X"};//8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 X"};
+PROGMEM prog_char voz3[]={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S ||: 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S :|| ||: 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S :|| 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 4S 8S 8G3 8S 4S ||: 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S :|| ||: 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8D3 4S 8F3 8G3 8S 8A3 8S 8G3 8S 8G3 8S 8C4 8C4 8G3 8S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8G3 4S 8G3 8G3 8A3 8S 8B3 8C4 8S 8G3 8S 8C3 8S 4S :|| X"};
+PROGMEM prog_char voz4[]={"X"};
+
+/* */
+/*
+PROGMEM prog_char voz1[]={""};
+PROGMEM prog_char voz1[]={""};
+PROGMEM prog_char voz1[]={""};
+PROGMEM prog_char voz1[]={""};*/
 
 PROGMEM const char* voces[]={voz1,voz2,voz3,voz4};
 
@@ -45,7 +63,7 @@ prog_uint16_t NOTAS[] PROGMEM={31,33,35,37,39,41,44,46,49,52,55,58, //12
                                3951,4186,4435,4699,4978,0};  //90
 
 
-const int delaytempo=7500/(constrain((int)(tempo),30,400)); //Equivale a (60 * 1000/tempo)/8. El 8 sale de que la fusa será la unidad básica de tiempo, y es 1/8 de negra.
+int delaytempo=7500/(constrain((int)(tempo),30,400)); //Equivale a (60 * 1000/tempo)/8. El 8 sale de que la fusa será la unidad básica de tiempo, y es 1/8 de negra.
 
 /* Nota. Tiene la nota en forma de String que tocará cada buzzer*/
 String nota[]={"S", "S", "S", "S"};
@@ -63,6 +81,10 @@ char buffer[6];
 
 /* Head. Cabezales de cada voz que indica dónde quedó la última lectura.*/
 int head[]={0,0,0,0};
+
+/* Rep. Almacena posicion donde el cabezal debiera devolverse en caso de 
+  una repetición. Si no hay repetición vale -1*/
+int rep[]={-1, -1, -1, -1};
 
 /* Arreglo con los períodos de cada nota en el buzzer, en microsegundos */
 int NOTAS_P[N_BUZZERS];
@@ -242,7 +264,8 @@ ISR(TIMER2_COMPA_vect){
 }
 
 void getNext(char voz){
-  /* Obtiene siguiente nota de la voz especificada y la sitúa en el buffer*/
+  /* Obtiene siguiente nota de la voz especificada y la sitúa en el buffer. Acá se identifica
+    si la melodía posee indicación de repetición.*/
   if  (head[voz]==-1){
     buffer[0]='X';
     buffer[1]='\0';
@@ -252,11 +275,34 @@ void getNext(char voz){
     PGM_P prog_str=(prog_char*)pgm_read_word(&(voces[voz]));
     /* iterador para caracteres*/
     char j=0;
-    
     /* ve cuando se acaba la melodía*/
     boolean fin=false;
-    /* recorrer cada caracter*/
+    
+    /* controla fin de repetición*/
+    boolean endrep=false,beginrep=false;
+    
+    /* recorrer cada caracter hasta encontrar  un espacio. Si se estaba en el final, se verá una X.*/
     while (((buffer[j]=(char) pgm_read_byte(&prog_str[head[voz]+j]))!= ' ')){
+      if (buffer[j]=='|'){//se encontró una repetición
+        /* pongo el cabezal en la posicion de la nota siguiente */
+        head[voz]+=4; // simbolo de repeticion es "||: " luego hay que saltarse 4 a la derecha para encontrar la siguiente nota.
+        /* almaceno la posición para volver después */
+        rep[voz]=head[voz];
+        beginrep=true;
+        /* obtengo inmediatamente la siguiente nota */
+        break;
+      }
+      if (buffer[j]==':'){ //se encontró fin de repetición y efectivamente había repetición
+        if (rep[voz]!=-1){ //si hay que repetir
+          head[voz]=rep[voz];
+          rep[voz]=-1;
+        }
+        else{  //ya se repitió y hay que ignorar el símbolo
+          head[voz]+=4;
+        }
+        endrep=true;
+        break;
+      }
       if (buffer[j]=='X'){
         fin=true;
         break;
@@ -267,9 +313,13 @@ void getNext(char voz){
       head[voz]=-1;
       buffer[1]='\0';
     }
+    else
+    if (beginrep||endrep){//hubo repetición: tomar inmediatamente siguiente nota, o finalizo la repeticion y hay que tomar la siguiente nota.
+        getNext(voz);
+      }
     else{
-      head[voz]+=(j+1);
-      buffer[j]='\0';
+        head[voz]+=(j+1);
+        buffer[j]='\0';
     }
   }
 }
@@ -364,11 +414,19 @@ void setup(){
   initTimer1();
   initTimer2();
   sei();
+  
+  
+  pinMode(0,INPUT);
 }
 
 void loop(){
   /* Libre para hacer cualquier otra cosa. Ojo que el timer 0 sigue libre, y por ende
   funcionan cosas como delay(), millis(), etc. */
+  
+  tempo=map(analogRead(0),0,1023,30,400);
+  delaytempo=7500/(int)(tempo);
+  OCR1A=delaytempo*250;
+  delay(250);
 }
 
 
@@ -457,6 +515,15 @@ lanza StackOverflow.
 Ideas para el futuro: 
     -Con un opamp hacer un sumador y reproducir los sonidos en una única salida de audio, ya sea a un 
     parlante o a audífonos.
-    -Implementar parseo de repeticiones, para no tener que copiar pegar todo un bloque. Ejemplo: "||:4C4 4D4 4E4 4F4:||4C4 X".
+    DONE Implementar parseo de repeticiones, para no tener que copiar pegar todo un bloque. Ejemplo: "||:4C4 4D4 4E4 4F4:||4C4 X".
     -Implementar tresillos.
+    -Crear software de inserción amigable de notas. El resultado del software es el resultado en texto que hay que copiar pegar para tener melodía.
+    
+--Guardando versión 4.0 en respaldo de versiones--
+    -Se implementó repeticiones. Nomenclatura explicada al inicio.
+    -Se testeó el jack de audio (chassis) y funciona bien mezclando directamente, pero podría quizás mejorarse
+      la calidad del audio usando un sumador activo.
+    -Se varía el tempo con un potenciómetro.
+--Guardando versión 5.0 en respaldo de versiones--
+
     .*/
