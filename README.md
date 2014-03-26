@@ -12,7 +12,7 @@ Poliphonic chiptune music player. An arduino, a speaker and you're done! Play th
   <p>If you want to play the music on your subwoofer, headphones, or other, you can use an audio jack connector, wich is basicly this stuff:</p>
   <img src="http://users.dcc.uchile.cl/~acastro/random/chassis.gif" alt="chassis.gif" height="150px;"><br></li>
 <li><strong>Some resistors</strong>
-<p>One 330 Ω resistor for each voice, two 330 Ω resistors for current limiting on the leds and one 1 kΩ resistor for volume limiting. You can use different but similar values of resistors if you want.</p></li>
+<p>One 330 Ω resistor for each voice, two 330 Ω resistors for current limiting on the leds and one resistor of <strong>at least 1 kΩ</strong> for volume limiting. You can use different but similar values of resistors if you want.</p></li>
 <li><strong>2 potentiometers</strong>
 <p>I reccomend 2 10kΩ pots.</p></li>
 <li><strong>Two leds</strong></li>
@@ -28,9 +28,9 @@ Poliphonic chiptune music player. An arduino, a speaker and you're done! Play th
 <h3>How to use</h3>
 <ol>
 <li>Download the project (arduitunes.ino)</li>
-<li>Set things up in your protoboard</li>
+<li>Set things up in your protoboard. If you're using the audio jack connector, please, <strong>be sure to turn your speaker's volume and the volume potentiometer all the way down</strong> before connecting the arduino to the computer. This is to avoid blowing up your speakers</li>
 <li>Connect your arduino Uno and load the program</li>
-<li>Enjoy the pokemon battle theme</li>
+<li>(Gently) Adjust volume and... Enjoy the pokemon battle song theme!</li>
 </ol>
 <h3>Making your own music</h3>
 <p>In order to play musical notes, Arduitunes parses strings in real time. These strings must fit some protocol I came up with while programming. Directly writting the music into the program would be a pain in the bottom.</p>
