@@ -8,7 +8,7 @@ Poliphonic chiptune music player. An arduino, a speaker and you're done! Play th
 <li><strong>An arduino UNO board</strong><br>
   <p>I haven't tested this on other arduino boards, but it is most unlikely to work, say, on a Mega since the program edits directly some registers that have different meanings depending on the board you're using.</p></li>
 <li><strong>A speaker or an audio jack connector</strong><br>
-  <p>If you choose to use a speaker, choose a little one, like a piezo electric one, one from  old headphones, those you can take apart from toys, etc.</p>
+  <p>If you choose to use a speaker, choose a little one, like a piezo speaker, one from old headphones, those you can take apart from toys, etc.</p>
   <p>If you want to play the music on your subwoofer, headphones, or other, you can use an audio jack connector, wich is basicly this stuff:</p>
   <img src="http://users.dcc.uchile.cl/~acastro/random/chassis.gif" alt="chassis.gif" height="100px;"><br></li>
 <li><strong>Some resistors</strong>
