@@ -28,8 +28,10 @@ word tempo=200;
                            -Las repeticiones se hacen dentro de un bloque encerrado por " ||: " y " :|| " en ese orden. Notar los espacios. Ejemplo: "4C4 ||: 4C4 4A3 4F3 4G3 :|| X"
                            -NO se puede anidar repeticiones. NO es válido cosas como "||: 4C4 ||: 4G4 :|| :|| X".
                            */
+
+/*######################### PRESET MELODYS #########################*/
                            
-/* SUPER MARIO*/
+/**************** SUPER MARIO*****************/
 /*
 PROGMEM prog_char voz1[]={
                           "8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| "
@@ -62,7 +64,7 @@ PROGMEM prog_char voz4[]={"X"};
 PROGMEM prog_char voz5[]={"X"};
 */
 
-/* POKEMON BATTLE MUSIC*/
+/******************** POKEMON BATTLE MUSIC*************************/
 
 PROGMEM prog_char voz1[]={
 "16A5 16GS5 16G5 16FS5 16A5 16F5 16FS5 16F5 16A5 16E5 16F5 16E5 16A5 16DS5 16E5 16DS5 16A5 16D5 16DS5 16D5 16A5 16CS5 16D5 16CS5 16A5 16C5 16CS5 16C5 16A5 16B4 16C5 16B4 8B5 8S 4S 2S 1S 8B5 8S 4S "
@@ -128,7 +130,7 @@ PROGMEM prog_char voz5[]={
 "X"};
 
 
-/* Shingeki */
+/*************************Shingeki ***************************/
 /*
 PROGMEM prog_char voz1[]={
 "8D5 8D5 8F5 4E5 8C5 8C5 4D5 8D5 8F5 4E5 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8D5 8S 8E5 8S 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8E5 8S 8D5 8S 4C5 8S "
@@ -145,7 +147,7 @@ PROGMEM prog_char voz5[]={
 "X"};
 */
 
-
+/*############################## END PRESET MELODYS ##############################*/
 
 
 PROGMEM const char* voces[]={voz1,voz2,voz3,voz4,voz5};
