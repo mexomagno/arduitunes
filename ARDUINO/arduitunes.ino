@@ -13,11 +13,7 @@
 
 #include <Arduino.h>
 
-/* Tempo, recommended: between 30 and 400*/
-word tempo = 200;
-
 char noteStringToFrequency(String s);
-
 void doTick();
 
 
@@ -181,19 +177,6 @@ const char voice5_melody[] PROGMEM={
 
 const char *const all_melodies[] PROGMEM = {voice1_melody, voice2_melody, voice3_melody, voice4_melody, voice5_melody};
 
-// Active voices
-#define ACTIVE_VOICES_COUNT 3
-
-// Voices pins
-char voices_output_pins[ACTIVE_VOICES_COUNT];
-
-// Status led pins
-char rhythm_led_pin = 11;
-char tempo_led_pin = 12;
-
-// Led tempo counter
-char tempo_led_counter = 0;
-
 // Musical notes frequencies (Hz)
 const uint16_t NOTE_FREQUENCIES[] PROGMEM = {
         31,/*C1*/33, 35, 37, 39, 41, 44, 46, 49, 52, 55, 58, //12
@@ -206,34 +189,53 @@ const uint16_t NOTE_FREQUENCIES[] PROGMEM = {
         3951,/*C8*/4186, 4435, 4699, 4978, 0};  //90
 
 
+// Maximum common divider. Voice notes periods must be a multiple of this
+// * Less: More precise notes, higher processing frequency, risks timer callback not finishing at time
+// * More: Less precise notes (untuned), no risks for timer callback
+const char mcd = 20; // Jeremy Blum proposes: 64.
+// Tempo, recommended: between 30 and 400
+word tempo = 200;  // Initial value, will be immediately changed by analog input
 // Time period for a 32th-note, derived from the tempo
 int tempo_32th_tick_period = 7500 / (constrain((int) (tempo), 30, 400));
 // 7500 comes from (60*1000/tempo)/8. The 8 is derived by considering a demisemiquaver as the fundamental time unit (1/8 of a quarter note)
 
+// Number of voices to activate
+#define ACTIVE_VOICES_COUNT 3
+
+// VOICES NOTE STATE TRACKERS
+
+// Voices pins
+char voices_output_pins[ACTIVE_VOICES_COUNT];
 // Used to parse each voice's note sequence
 String current_note_strings[] = {"S", "S", "S", "S", "S"};
-
 // Each voice current note duration
 unsigned char current_note_durations[] = {0, 0, 0, 0, 0};
+// Voice headers, to track where the last reading was standing at
+int current_notestring_indexes[] = {0, 0, 0, 0, 0};
+// Pointers for repetitions
+int repetition_indexes[] = {-1, -1, -1, -1, -1};
+// Each voice note's period (microseconds, us) (period = 1/frequency)
+// 'Half period' is the time we must take to toggle the voice's output in order to do it in the desired frequency.
+int current_note_half_periods_us[ACTIVE_VOICES_COUNT];
+// Voices tick counters (mutable). Tracks each voice's current note ticks. Needed to know when to change the note.
+// Using chars instead of ints break silences, don't know why yet
+unsigned int current_note_tick_counts[ACTIVE_VOICES_COUNT];
+// Counts per note (max is 252, so unsigned char is enough)
+// 'current_note_tick_limits' symbolize the total period divided by the time the timer counter takes to reset.
+// As we want the timer to take 'mcd' us (microseconds), 'current_note_tick_limits' is period/mcd.
+// If a voice reaches this value, it's current note life ended and we must load the next note.
+unsigned char current_note_tick_limits[ACTIVE_VOICES_COUNT];
 
 // Used to bring each note from the PROGMEM. The size is derived from the max string size used by our protocol (ex.: 32CS5)
 // Don't forget the trailing \0 char
 char progmem_buffer[6];
 
-// Voice headers, to track where the last reading was standing at
-int current_notestring_indexes[] = {0, 0, 0, 0, 0};
-
-// Pointers for repetitions
-int repetition_indexes[] = {-1, -1, -1, -1, -1};
-
-// Each voice note's period (microseconds, us) (period = 1/frequency)
-// 'Half period' is the time we must take to toggle the voice's output in order to do it in the desired frequency.
-int current_note_half_periods_us[ACTIVE_VOICES_COUNT];
-
-// Maximum common divider. Voice notes periods must be a multiple of this
-// * Less: More precise notes, higher processing frequency, risks timer callback not finishing at time
-// * More: Less precise notes (untuned), no risks for timer callback
-const char mcd = 20; // Jeremy Blum proposes: 64.
+// LED STATE TRACKERS
+// Status led pins
+char rhythm_led_pin = 11;
+char tempo_led_pin = 12;
+// Led tempo counter
+char tempo_led_counter = 0;
 
 /**
  * Initializes time periods for each voice for their current notes.
@@ -257,21 +259,10 @@ void computeNotePeriods() {
         */
         int half_period = (int) (500000.0 / progint2int);  // Real half period of this tone
         current_note_half_periods_us[i] = half_period + ((half_period % mcd) <= (mcd / 2) ?
-                                           - (half_period % mcd) : 
+                                           - (half_period % mcd) :
                                            (mcd - (half_period % mcd))); // mcd-adjusted period
     }
 }
-
-// Voices tick counters (mutable). Tracks each voice's current note ticks. Needed to know when to change the note.
-// Using chars instead of ints break silences, don't know why yet
-unsigned int current_note_tick_counts[ACTIVE_VOICES_COUNT];
-
-// Counts per note (max is 252, so unsigned char is enough)
-// 'current_note_tick_limits' symbolize the total period divided by the time the timer counter takes to reset.
-// As we want the timer to take 'mcd' us (microseconds), 'current_note_tick_limits' is period/mcd.
-// If a voice reaches this value, it's current note life ended and we must load the next note.
-unsigned char current_note_tick_limits[ACTIVE_VOICES_COUNT];
-
 
 /**
  * Initializes the tick counters for each note, used to track each note duration.
