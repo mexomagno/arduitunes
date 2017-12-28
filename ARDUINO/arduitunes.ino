@@ -13,7 +13,7 @@
 
 #include <Arduino.h>
 
-char noteStringToFrequency(String s);
+char noteStringToFrequency(String note_string);
 void doTick();
 
 
@@ -37,9 +37,7 @@ void doTick();
 
 /*######################### PRESET MELODIES #########################*/
 
-/**************** SUPER MARIO*****************/
-
-//Ideal tempo: 200
+/** SUPER MARIO (ideal tempo: 200) **/
 
 const char voice1_melody[] PROGMEM = {
         "8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| "
@@ -72,8 +70,7 @@ const char voice4_melody[] PROGMEM = {"X"};
 const char voice5_melody[] PROGMEM = {"X"};
 
 
-/******************** POKEMON BATTLE MUSIC*************************/
-//ideal tempo: 180
+/** POKEMON BATTLE MUSIC (ideal tempo: 180) **/
 /*
 const char voice1_melody[] PROGMEM={
 "16A5 16GS5 16G5 16FS5 16A5 16F5 16FS5 16F5 16A5 16E5 16F5 16E5 16A5 16DS5 16E5 16DS5 16A5 16D5 16DS5 16D5 16A5 16CS5 16D5 16CS5 16A5 16C5 16CS5 16C5 16A5 16B4 16C5 16B4 8B5 8S 4S 2S 1S 8B5 8S 4S "
@@ -139,7 +136,7 @@ const char voice5_melody[] PROGMEM={
 "X"};
 */
 
-/************************* Attack on titan intro 1 ***************************/
+/** Attack on titan intro 1 **/
 /*
 const char voice1_melody[] PROGMEM={
 "8D5 8D5 8F5 4E5 8C5 8C5 4D5 8D5 8F5 4E5 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8D5 8S 8E5 8S 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8E5 8S 8D5 8S 4C5 8S "
@@ -156,8 +153,7 @@ const char voice5_melody[] PROGMEM={
 "X"};
 */
 
-/************************* Fullmetal alchemist intro 1 ***************************/
-
+/** Fullmetal alchemist intro 1 **/
 
 /*
 const char voice1_melody[] PROGMEM={
@@ -172,7 +168,7 @@ const char voice5_melody[] PROGMEM={
         "X"};
 */
 
-/*############################## END PRESET MELODYS ##############################*/
+/*############################## END PRESET MELODIES ##############################*/
 
 
 const char *const all_melodies[] PROGMEM = {voice1_melody, voice2_melody, voice3_melody, voice4_melody, voice5_melody};
@@ -278,23 +274,23 @@ void initDurationTickCounters() {
  * Parses a string representing a tone and returns the tone position in the notes list.
  * Perfect inputs assumed
  *
- * s has two possible shapes:
+ * note_string has two possible shapes:
  *  1. XY
  *  2. XSY
  *
- * @param s: input string
+ * @param note_string: input string
  * @return: int: index to notes list
  */
-char noteStringToFrequency(String s) {
-    if (s[0] == 'S') {
+char noteStringToFrequency(String note_string) {
+    if (note_string[0] == 'S') {
         PORTB &= ~(_BV(rhythm_led_pin - 8));
         return 89;
     }
     // Remembering ASCII code: A=65, ..., G=71
     PORTB |= _BV(rhythm_led_pin - 8);
     char pos;
-    if (s[1] != 'S') { // Natural note, no sharp
-        switch (s[0]) {
+    if (note_string[1] != 'S') { // Natural note, no sharp
+        switch (note_string[0]) {
             case 65: //A
                 pos = 9;
                 break;
@@ -320,7 +316,7 @@ char noteStringToFrequency(String s) {
                 pos = 9;
         }
     } else {
-        switch (s[0]) { // Sharp note
+        switch (note_string[0]) { // Sharp note
             case 65: //A#
                 pos = 10;
                 break;
@@ -343,7 +339,7 @@ char noteStringToFrequency(String s) {
         }
     }
     // Magic equation that returns the exact note index
-    return (((s[(s[1] == 'S') ? 2 : 1] - 1) - '0') * 12) + 1 + pos;
+    return (((note_string[(note_string[1] == 'S') ? 2 : 1] - 1) - '0') * 12) + 1 + pos;
 }
 
 void initTimer1() {
