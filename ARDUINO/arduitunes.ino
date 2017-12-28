@@ -16,7 +16,7 @@
 /* Tempo, recommended: between 30 and 400*/
 word tempo=200;
 
-char parseNota(String);
+char noteStringToFrequency(String s);
 void update();
 
 
@@ -44,7 +44,7 @@ void update();
 
 //Ideal tempo: 200
 
-const char voz1[] PROGMEM={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| "
+const char voice1_melody[] PROGMEM={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| "
                           "||: 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8C6 8S 8C6 8C6 8S 2S 8G5 8FS5 8F5 8DS5 8S 8E5 8S 8GS4 8A4 8C5 8C5 8A4 8C5 8D5 4S 8DS5 4S 8D5 4S 8C5 4S 8S 2S :|| "
                           "8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S "
                           "||: 8C5 4S 8G4 4S 8E4 4S 8A4 8S 8B4 8S 8AS4 8A4 8S 8G4 8E5 8S 8G5 8A5 8S 8F5 8G5 8S 8E5 8S 8C5 8D5 8B4 4S :|| "
@@ -52,7 +52,7 @@ const char voz1[] PROGMEM={"8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 4S 8S ||:
                           "8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8C5 8C5 8S 8C5 8S 8C5 8D5 8E5 2S 2S 8C5 8C5 8S 8C5 8S 8C5 8D5 8S 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8E5 8S 8E5 8S 8C5 8E5 8S 8G5 8S 4S 8G4 8S 4S "
                           "8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8A5 8S 8A5 8A5 8G5 8S 8F5 8E5 8C5 8S 8A4 8G4 8S 4S 8E5 8C5 8S 8G4 4S 8GS4 8S 8A4 8F5 8S 8F5 8A4 8S 4S 8B4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8S 4S 2S "
                           "8C5 4S 8G4 4S 8E4 8S 8A4 8B4 8A4 4GS4 4AS4 4GS4 1G4 X"};
-const char voz2[] PROGMEM={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 8S 4S 8B3 4S 8S ||: 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8C5 8S 8A4 8G4 8G4 4S :|| "
+const char voice2_melody[] PROGMEM={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 8S 4S 8B3 4S 8S ||: 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8C5 8S 8A4 8G4 8G4 4S :|| "
                           "||: 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8G5 8S 8G5 8G5 8S 2S 8E5 8DS5 8D5 8B4 8S 8C5 8S 8E4 8F4 8G4 8S 8C4 8E4 8F4 4S 8GS4 4S 8F4 4S 8E4 4S 8S 2S :|| "
                           "8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 4S 8S 8D4 8S 4S "
                           "||: 8G4 4S 8E4 4S 8C4 4S 8F4 8S 8G4 8S 8FS4 8F4 8S 8E4 8C5 8S 8E5 8F5 8S 8D5 8E5 8S 8D5 8S 8A4 8G4 8D4 4S :|| "
@@ -60,7 +60,7 @@ const char voz2[] PROGMEM={"8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 8S 4S 8B3 4S 8
                           "8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8G4 2S 2S 8GS4 8GS4 8S 8GS4 8S 8GS4 8AS4 8S 8G4 8E4 8S 8E4 8C4 8S 4S 8FS4 8FS4 8S 8FS4 8S 8FS4 8FS4 8S 8D5 4S 8S 8D4 8S 4S "
                           "8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8F5 8S 8F5 8F5 8E5 8S 8D5 8C5 8F4 8S 8F4 8E4 8S 4S 8C5 8G4 8S 8E4 4S 8E4 8S 8F4 8C5 8S 8C5 8F4 8S 4S 8G4 8D5 8S 8D5 8D5 8C5 8S 8B4 8G4 8E4 8S 8E4 8C4 8S 4S "
                           "8E4 4S 8C4 4S 8G3 8S 8F4 4F4 4F4 2F4 8E4 8D4 2E4 4E4 X"};
-const char voz3[] PROGMEM={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S ||: 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S :|| "
+const char voice3_melody[] PROGMEM={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S ||: 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S :|| "
                           "||: 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 4S 8E3 4S 8G3 8C4 8S 8F5 8S 8F5 8F5 8S 8G3 8S 8C3 4S 8G3 4S 8C4 8S 8F3 4S 8C4 8C4 8C4 8F3 8S 8C3 8S 8GS3 4S 8AS3 4S 8C4 4S 8G3 8G3 8S 8C3 8S :|| "
                           "8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 4S 8S 8G3 8S 4S "
                           "||: 8E4 4S 8C4 4S 8G3 4S 8C4 8S 8D4 8S 8CS4 8C4 8S 8C4 8G4 8S 8B4 8C5 8S 8A4 8B4 8S 8A4 8S 8E4 8F4 8D4 4S :|| "
@@ -68,14 +68,14 @@ const char voz3[] PROGMEM={"8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 8S 4S 8G3 4S 8S ||:
                           "8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8GS2 4S 8DS3 4S 8GS3 8S 8G3 4S 8C3 4S 8G2 8S 8D3 8D3 8S 8D3 8S 8D3 8D3 8S 8B4 4S 8S 8G3 8S 4S "
                           "8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8D3 4S 8F3 8G3 8S 8A3 8S 8G3 8S 8G3 8S 8C4 8C4 8G3 8S 8C3 4S 8FS3 8G3 8S 8C4 8S 8F3 8S 8F3 8S 8C4 8C4 8F3 8S 8G3 4S 8G3 8G3 8A3 8S 8B3 8C4 8S 8G3 8S 8C3 8S 4S "
                           "8G3 4S 8E3 4S 8C3 8S 8F3 4F3 4CS3 2CS3 1C3 X"};
-const char voz4[] PROGMEM={"X"};
-const char voz5[] PROGMEM={"X"};
+const char voice4_melody[] PROGMEM={"X"};
+const char voice5_melody[] PROGMEM={"X"};
 
 
 /******************** POKEMON BATTLE MUSIC*************************/
 //ideal tempo: 180
 /*
-const char voz1[] PROGMEM={
+const char voice1_melody[] PROGMEM={
 "16A5 16GS5 16G5 16FS5 16A5 16F5 16FS5 16F5 16A5 16E5 16F5 16E5 16A5 16DS5 16E5 16DS5 16A5 16D5 16DS5 16D5 16A5 16CS5 16D5 16CS5 16A5 16C5 16CS5 16C5 16A5 16B4 16C5 16B4 8B5 8S 4S 2S 1S 8B5 8S 4S "
 "2S 2S 4S 8A5 8S 8B4 4S 8CS5 4S 8D5 8S 8B4 8CS5 8S 8D5 4S 8A5 8AS5 8B5 4S 8CS6 4S 8D6 8S 8B5 8CS6 8S 8D6 4S 8A5 8S 4B4 8B4 2FS4 8S 4S 4B4 4FS4 4B4 1C5 "
 "1S 4B4 8B4 2FS4 8S 4S 4B4 4FS4 4B4 1A4 1S 1G4 2D5 2G4 1A4 1S 1G4 2E5 2FS5 1E5 4G5 8A5 8G5 8FS5 8E5 8D5 8E5 1FS5 1FS5 1G5 4G5 8A5 8G5 8G5 8FS5 8E5 8FS5 1GS5 1GS5 1A5 "
@@ -87,7 +87,7 @@ const char voz1[] PROGMEM={
 "2CS6 2E6 4D6 4A5 8C6 8B5 1B5 4B5 2B5 4D6 4A5 8AS5 8F6 2F6 4F6 1G6 1E6 2E6 4E6 8E6 8B4 4C5 8C5 8A4 2A4 4S 4C5 4A4 4C5 4AS4 8AS4 2F5 4S 8S 4AS4 4F5 4D5 4C5 8C5 8A4 "
 "2A4 4S 4A4 8E5 8D5 8C5 8E5 8D5 4AS4 8F5 2F5 4G5 8G5 4F5 8F5 4D5 1F5 1E5 1D5 1E5 1F6 1E6 1G6 1F6 ||: 8E5 4S 8E5 4S 8E5 8S 8E5 4S 8E5 4S 8E5 8S :|| 4A4 4B4 "
 "8G4 8A4 2A4 8B4 8CS5 8E5 8D5 8CS5 8B4 1AS4 8S 8AS4 8C5 8F5 8E5 8D5 8C5 8AS4 1B4 8S 8B4 8CS5 8G5 8FS5 8E5 8D5 8B4 1C5 2E5 2G5 1D5 X"};
-const char voz2[] PROGMEM={
+const char voice2_melody[] PROGMEM={
 "2S 16F4 16E4 16F4 16E4 16DS4 16D4 16DS4 16D4 16CS4 16D4 16CS4 16C4 16B3 16C4 16B3 16AS3 16B3 16AS3 16A3 16AS3 16A3 16GS3 16A3 16GS3 ||: 8D4 4S 8E4 4S 8F4 8S 8D4 8E4 8S 8F4 4S 8C4 8S 8D4 "
 "4S 8E4 4S 8F4 8S 8D4 8E4 8S 8F4 4S 8C4 8CS4 :|| 8D4 4E4 8CS4 4D4 4B3 4FS3 8E4 4D4 8CS4 8D4 8E4 2F4 16C4 16CS4 16D4 16DS4 16E4 16DS4 16D4 16C4 16C4 16CS4 16D4 16DS4 16E4 16F4 16FS4 "
 "16G4 16GS4 16G4 16FS4 16F4 16E4 16DS4 16D4 16CS4 8D4 4E4 8CS4 4D4 4B3 4FS3 8E4 4D4 8CS4 8B3 8CS4 2D4 2CS4 2B3 2CS4 8D4 8CS4 8B3 8A3 8G3 8S 8D4 8CS4 8B3 8A3 8G3 8S 8D4 8CS4 8B3 8CS4 "
@@ -113,7 +113,7 @@ const char voz2[] PROGMEM={
 "1AS3 2G3 4G3 16D4 16E4 16G4 16C5 2D5 2F5 2AS4 2C5 2D5 2E5 2F5 2G5 8AS4 4S 8AS4 4S 8AS4 8S 8A4 4S 8A4 4S 8A4 8S 8C5 4S 8C5 4S 8C5 8S 8AS4 4S 8AS4 4S 8A4 8S 8C4 "
 "4D4 8B3 4CS4 8S 16CS4 16D4 16E4 16S 16D4 16S 16B3 16S 16CS4 16S 2S 16D4 16DS4 16E4 16F4 16F4 16E4 16DS4 16D4 16CS4 16S 4S 16CS4 16D4 16E4 16S 16F4 16S 16E4 16S 16D4 16S 8D4 8E4 8F4 8G4 "
 "16DS4 16E4 16F4 16FS4 16FS4 16F4 16E4 16DS4 16D4 16S 2S 8FS4 4E4 8DS4 8E4 8FS4 8GS4 2E4 2FS4 2G4 4C5 16FS4 16G4 16GS4 16A4 1B4 X"};
-const char voz3[] PROGMEM={
+const char voice3_melody[] PROGMEM={
 "16B3 16AS3 16A3 16GS3 16A3 16GS3 16G3 16GS3 16G3 16FS3 16F3 16FS3 16F3 16E3 16F3 16E3 16DS3 16E3 16DS3 16D3 16CS3 16D3 16CS3 16C3 16B2 16C3 16B2 16AS2 16A2 16GS2 16A2 16AS2 ||: 8B2 8B2 8D3 8E3 8B2 8F3 8E3 "
 "8D3 8B2 8B2 8D3 8E3 8B2 8D3 8AS2 8C3 :|| ||: 8B2 8B2 8D3 8E3 8B2 8F3 8E3 8D3 8B2 8B2 8D3 8E3 8B2 8D3 8AS2 8C3 :|| ||: 8B2 8FS3 8B2 8FS3 8B2 8FS3 8B2 8FS3 :|| 8B2 8G3 "
 "8C3 8G3 8C3 8G3 8C3 8G3 8C3 8G3 8A3 8G3 8FS3 8E3 8D3 8C3 ||: 8B2 8FS3 8B2 8FS3 8B2 8FS3 :|| 8B2 8FS3 8B2 8F3 ||: 8A2 8E3 8A2 8E3 :|| 8A2 8E3 8D3 8CS3 8D3 8CS3 8A2 8GS2 "
@@ -133,26 +133,26 @@ const char voz3[] PROGMEM={
 "||: 8AS2 8F3 8AS2 8F3 8AS2 8F3 8AS2 8F3 :|| ||: 8A2 8E3 8A2 8E3 8A2 8E3 8A2 8E3 :|| ||: 8AS2 8F3 8AS2 8F3 8AS2 8F3 8AS2 8F3 :|| ||: 4AS2 4F3 4AS2 4F3 4AS2 4E3 4AS2 4E3 4AS2 "
 "4D3 4AS2 4D3 4AS2 4E3 4AS2 4E3 :|| ||: 8A2 8E3 8E3 8A2 8E3 8E3 8A2 8E3 8E3 8A2 8E3 8E3 8A2 8E3 8E3 8B2 :|| ||: 8A2 8E3 8A2 8E3 8A2 8E3 8A2 8E3 :|| ||: 8AS2 8F3 8AS2 "
 "8F3 8AS2 8F3 8AS2 8F3 :|| ||: 8B2 8FS3 8B2 8FS3 8B2 8FS3 8B2 8FS3 :|| ||: 8C3 8G3 8C3 8G3 :|| 8C3 8G3 8FS3 8E3 8FS3 8E3 8D3 8C3 1B2 X"};
-const char voz4[] PROGMEM={
+const char voice4_melody[] PROGMEM={
 "X"};
-const char voz5[] PROGMEM={
+const char voice5_melody[] PROGMEM={
 "X"};
 */
 
 /************************* Attack on titan intro 1 ***************************/
 /*
-const char voz1[] PROGMEM={
+const char voice1_melody[] PROGMEM={
 "8D5 8D5 8F5 4E5 8C5 8C5 4D5 8D5 8F5 4E5 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8D5 8S 8E5 8S 4C5 8S 4A5 8F5 8G5 8S 8E5 8S 8F5 8S 8E5 8S 8D5 8S 4C5 8S "
 "4C6 8GS5 8AS5 8S 8G5 8S 8GS5 8S 8F5 8S 8G5 8S 4DS5 8S 4C6 8GS5 8AS5 8S 8G5 8S 8GS5 8S 8G5 8S 8F5 8S 4DS5 8S X"};
-const char voz2[] PROGMEM={
+const char voice2_melody[] PROGMEM={
 "8D4 8D4 8F4 4E4 8C4 8C4 4D4 8D4 8F4 4E4 4C4 8S ||: 8D3 8D4 8D3 8D4 :|| 8D3 8D4 8D3 8D4 8D3 8C4 8C3 8C4 ||: 8AS2 8AS3 8AS2 8AS3 :|| 8AS2 8AS3 8AS2 8AS3 8AS2 8C4 8C3 8C4 "
 "||: 8F3 8F4 8F3 8F4 :|| 8F3 8F4 8F3 8F4 8F3 8DS4 8DS3 8DS4 ||: 8CS3 8CS4 8CS3 8CS4 :|| 8CS3 8CS4 8CS3 8CS4 8CS3 8DS4 8DS3 8DS4 X"};
-const char voz3[] PROGMEM={
+const char voice3_melody[] PROGMEM={
 "1S 2S 4S 16A4 16AS4 16B4 16CS5 4D5 8D5 8E5 8S 8C5 8S 8D5 8S 8A4 8S 8C5 8S 4G4 8S 4F5 8D5 8E5 8S 8C5 8S 8D5 8S 8C5 8S 8A4 8S 4G4 8S 4GS5 8F5 8G5 8S 8DS5 "
 "8S 8F5 8S 8C5 8S 8DS5 8S 4AS4 8S 4GS5 8F5 8G5 8S 8DS5 8S 8F5 8S 8DS5 8S 8C5 8S 4AS4 8S X"};
-const char voz4[] PROGMEM={
+const char voice4_melody[] PROGMEM={
 "X"};
-const char voz5[] PROGMEM={
+const char voice5_melody[] PROGMEM={
 "X"};
 */
 
@@ -160,38 +160,38 @@ const char voz5[] PROGMEM={
 
 
 /*
-const char voz1[] PROGMEM={
+const char voice1_melody[] PROGMEM={
         "8E5 4B5 8E5 4E5 4D5 8E5 8B5 8E5 8E5 16D5 16E5 8E5 4FS5 16FS5 16FS5 8FS5 8G5 8FS5 8G5 8FS5 8B4 4B4 1S X"};
-const char voz2[] PROGMEM={
+const char voice2_melody[] PROGMEM={
         "8S 8C3 8S 8S 8C3 8S 8S 8C3 8S 8D3 8S 8S 8D3 8S 8S 8D3 8S 8E3 8S 8S 8E3 8S 8S 8E3 8S 8E3 8S 8S 8E3 8S 8S 8E3 8S X"};
-const char voz3[] PROGMEM={
+const char voice3_melody[] PROGMEM={
         "8S 8G3 8S 8S 8G3 8S 8S 8G3 8S 8A3 4S 8A3 4S 8A3 8S 8B3 4S 8B3 4S 8B3 8S 8B3 4S 8B3 4S 8B3 8S X"};
-const char voz4[] PROGMEM={
+const char voice4_melody[] PROGMEM={
         "X"};
-const char voz5[] PROGMEM={
+const char voice5_melody[] PROGMEM={
         "X"};
 */
 
 /*############################## END PRESET MELODYS ##############################*/
 
 
-const char* const voces[] PROGMEM={voz1,voz2,voz3,voz4,voz5};
+const char* const all_melodies[] PROGMEM={voice1_melody,voice2_melody,voice3_melody,voice4_melody,voice5_melody};
 
-// Active buzzers
-#define N_BUZZERS 3
+// Active voices
+#define ACTIVE_VOICES 3
 
 // Voices pins
-char buzz[N_BUZZERS];
+char voices_output_pins[ACTIVE_VOICES];
 
 // Status led pins
-char rythmLed=11;
-char tempoLed=12;
+char rhythm_led_pin = 11;
+char tempo_led_pin = 12;
 
 // Led tempo counter
-char tempoLedCounter=0;
+char tempo_led_counter = 0;
 
 // Musical notes frequencies (Hz)
-const uint16_t NOTAS[] PROGMEM={31,/*C1*/33,35,37,39,41,44,46,49,52,55,58, //12
+const uint16_t NOTE_FREQUENCIES[] PROGMEM={31,/*C1*/33,35,37,39,41,44,46,49,52,55,58, //12
                                62,/*C2*/65,69,73,78,82,87,93,98,104,110,117,  //24
                                123,/*C3*/131,139,147,156,165,175,185,196,208,220,233, //36
                                247,/*C4*/262,277,294,311,330,349,370,392,415,440,466,  //48
@@ -205,23 +205,23 @@ int delaytempo=7500/(constrain((int)(tempo),30,400));
 // 7500 comes from (60*1000/tempo)/8. The 8 is derived by considering a demisemiquaver as the fundamental time unit (1/8 of a quarter note)
 
 // Used to parse each voice's note sequence
-String nota[]={"S", "S", "S", "S", "S"};
+String current_note_strings[]={"S", "S", "S", "S", "S"};
 
 // Each voice current note duration
-unsigned char duracion[]={0,0,0,0,0};
+unsigned char current_note_durations[]={0,0,0,0,0};
 
 // Used to bring each note from the PROGMEM. The size is derived from the max string size used by our protocol (ex.: 32CS5)
 // Don't forget the trailing \0 char
-char buffer[6];
+char progmem_buffer[6];
 
 // Voice headers, to track where the last reading was standing at
-int head[]={0,0,0,0,0};
+int current_notestring_indexes[]={0,0,0,0,0};
 
 // Pointers for repetitions
-int rep[]={-1, -1, -1, -1, -1};
+int repetition_indexes[]={-1, -1, -1, -1, -1};
 
 // Each voice note's period (ms) (period = 1/frequency)
-int NOTAS_P[N_BUZZERS];
+int NOTAS_P[ACTIVE_VOICES];
 // Maximum common divider. Voice notes periods must be a multiple of this
 // * Less: More precise notes, higher processing frequency, risks timer callback not finishing at time
 // * More: Less precise notes, no risks for timer callback
@@ -229,26 +229,26 @@ const char mcd=20; // Jeremy Blum proposes: 64.
 
 // Periods initializer
 void initNotas_p(){
-  for (char i=0;i<N_BUZZERS;i++){
-    int progint2int=pgm_read_word_near(NOTAS + parseNota(nota[i]));
+  for (char i=0;i<ACTIVE_VOICES;i++){
+    int progint2int=pgm_read_word_near(NOTE_FREQUENCIES + noteStringToFrequency(current_note_strings[i]));
     int periodo=(int)(500000.0/progint2int);  // Actual note period
     NOTAS_P[i]=periodo + ((periodo%mcd)<=(mcd/2) ? -(periodo%mcd) : (mcd-(periodo%mcd))); // mcd-adjusted period
   }
 }
 // Voices tick counters (mutable)
 // using chars instead of ints break silences, don't know why
-unsigned int count[N_BUZZERS];
+unsigned int count[ACTIVE_VOICES];
 
 // Counts per note (max is 252, so unsigned char is enough)
 // 'counts' are the total period divided by the time the timer counter takes to reset.
 // As we want the timer to take 'mcd' us (microseconds), 'counts' is period/mcd.
 // These values are constant throughout execution
-unsigned char counts[N_BUZZERS];
+unsigned char counts[ACTIVE_VOICES];
 
 
 // 'counts' initializer
 void initCounts(){
-  for (char i=0;i<N_BUZZERS;i++){
+  for (char i=0;i<ACTIVE_VOICES;i++){
     counts[i]=NOTAS_P[i]/mcd;
     count[i]=0;
   }
@@ -265,13 +265,13 @@ void initCounts(){
  * @param s: input string
  * @return: int: index to notes list
  */
-char parseNota(String s){
+char noteStringToFrequency(String s){
   if (s[0]=='S') {
-    PORTB &= ~(_BV(rythmLed-8));
+    PORTB &= ~(_BV(rhythm_led_pin-8));
     return 89;
   }
   // Remembering ASCII code: A=65, ..., G=71
-  PORTB |= _BV(rythmLed-8);
+  PORTB |= _BV(rhythm_led_pin-8);
   char pos;
   if (s[1]!='S'){ // Natural note, no sharp
     switch (s[0]){
@@ -362,8 +362,8 @@ void initTimer2(){
 // Timer 1 interrupt handler (ISR: Interrupt Service Routine)
 ISR(TIMER1_COMPA_vect){
   // tempo led
-  PORTB = (tempoLedCounter==7 ? PORTB | _BV(tempoLed -8) : PORTB & ~(_BV(tempoLed-8)));
-  tempoLedCounter=((tempoLedCounter+1)%8);
+  PORTB = (tempo_led_counter==7 ? PORTB | _BV(tempo_led_pin -8) : PORTB & ~(_BV(tempo_led_pin-8)));
+  tempo_led_counter=((tempo_led_counter+1)%8);
   // update notes
   update();
 }
@@ -371,10 +371,10 @@ ISR(TIMER1_COMPA_vect){
 // Timer 2 interrupt handler
 ISR(TIMER2_COMPA_vect){
   // For each voice, increase count and check if the output has to be toggled
-  for (char i=0; i<N_BUZZERS; i++){
+  for (char i=0; i<ACTIVE_VOICES; i++){
     count[i]++;
     if (count[i] == counts[i]){
-      PORTD ^= (_BV(buzz[i]));  // much faster than digitalWrite
+      PORTD ^= (_BV(voices_output_pins[i]));  // much faster than digitalWrite
       count[i]=0;
     }
   }
@@ -387,65 +387,65 @@ ISR(TIMER2_COMPA_vect){
  * @param voz : Voice to read
  */
 void getNext(char voz){
-  if  (head[voz]==-1){
-    buffer[0]='X';
-    buffer[1]='\0';
+  if  (current_notestring_indexes[voz]==-1){
+    progmem_buffer[0]='X';
+    progmem_buffer[1]='\0';
   }
   else{
     // Get pointer to voice string on progmem
-    PGM_P prog_str=(const char*)pgm_read_word(&(voces[voz]));
+    PGM_P prog_str=(const char*)pgm_read_word(&(all_melodies[voz]));
     char j=0;
     boolean fin=false;
     boolean endrep=false,beginrep=false;
 
     // Read strings until space or 'X'
-    while (((buffer[j]=(char) pgm_read_byte(&prog_str[head[voz]+j]))!= ' ')){
-      if (buffer[j]=='|'){ // Repetition found
+    while (((progmem_buffer[j]=(char) pgm_read_byte(&prog_str[current_notestring_indexes[voz]+j]))!= ' ')){
+      if (progmem_buffer[j]=='|'){ // Repetition found
         // Move header on next voice
-        head[voz]+=4; // Jump 4 characters, as repetition symbol has 4: '||: '
+        current_notestring_indexes[voz]+=4; // Jump 4 characters, as repetition symbol has 4: '||: '
         // Store repetition to come back later
-        rep[voz]=head[voz];
+        repetition_indexes[voz]=current_notestring_indexes[voz];
         beginrep=true;
         // Read next note
         break;
       }
-      if (buffer[j]==':'){ // Repetition end
-        if (rep[voz]!=-1){ // If a repetition was started earlier
-          head[voz]=rep[voz];
-          rep[voz]=-1;
+      if (progmem_buffer[j]==':'){ // Repetition end
+        if (repetition_indexes[voz]!=-1){ // If a repetition was started earlier
+          current_notestring_indexes[voz]=repetition_indexes[voz];
+          repetition_indexes[voz]=-1;
         }
         else{  //  Already repeated. Ignore repetition end
-          head[voz]+=4;
+          current_notestring_indexes[voz]+=4;
         }
         endrep=true;
         break;
       }
-      if (buffer[j]=='X'){
+      if (progmem_buffer[j]=='X'){
         fin=true;
         break;
       }
       j++;
     }
     if (fin){
-      head[voz]=-1;
-      buffer[1]='\0';
+      current_notestring_indexes[voz]=-1;
+      progmem_buffer[1]='\0';
     }
     else
     if (beginrep||endrep){  // repetition symbol. Read next note
         getNext(voz);
       }
     else{
-        head[voz]+=(j+1);
-        buffer[j]='\0';
+        current_notestring_indexes[voz]+=(j+1);
+        progmem_buffer[j]='\0';
     }
   }
 }
 boolean melodyOver(){
   char c=0;
-  for (int i=0;i<N_BUZZERS;i++){
-    c+=head[i];
+  for (int i=0;i<ACTIVE_VOICES;i++){
+    c+=current_notestring_indexes[i];
   }
-  return (c==(N_BUZZERS*-1))? true : false;
+  return (c==(ACTIVE_VOICES*-1))? true : false;
 }
 
 void endProgram(){
@@ -453,8 +453,8 @@ void endProgram(){
   TIMSK1 &= ~(1<<OCIE1A);
   TIMSK2 &= ~(1<<OCIE2A);
   sei();
-  digitalWrite(rythmLed,HIGH);
-  digitalWrite(tempoLed,HIGH);
+  digitalWrite(rhythm_led_pin,HIGH);
+  digitalWrite(tempo_led_pin,HIGH);
 }
 
 /**
@@ -463,9 +463,9 @@ void endProgram(){
  * @param voz
  */
 void seteaNota(char voz){
-  if (buffer[0]=='X'){  // If no notes left, put silences forever until every voice ends.
-    nota[voz]="S";
-    duracion[voz]=32;
+  if (progmem_buffer[0]=='X'){  // If no notes left, put silences forever until every voice ends.
+    current_note_strings[voz]="S";
+    current_note_durations[voz]=32;
     if (melodyOver()){
       endProgram();
     }
@@ -475,31 +475,31 @@ void seteaNota(char voz){
     String numbers="26";  //  cases 16 and 32
     int d;
     boolean dosdig=false; //  if duration had 2 digits
-    if (numbers.indexOf(buffer[1])!=-1){
-      d=32/((buffer[0]-'0')*10 + (buffer[1]-'0'));
+    if (numbers.indexOf(progmem_buffer[1])!=-1){
+      d=32/((progmem_buffer[0]-'0')*10 + (progmem_buffer[1]-'0'));
       dosdig=true;
     }
     else
-      d=32/(buffer[0]-'0');
-    duracion[voz]=d;
+      d=32/(progmem_buffer[0]-'0');
+    current_note_durations[voz]=d;
 
     // store note
     char j=dosdig ? 2 : 1; // stands in the note position
-    nota[voz]=buffer;
-    nota[voz]=nota[voz].substring(j);
+    current_note_strings[voz]=progmem_buffer;
+    current_note_strings[voz]=current_note_strings[voz].substring(j);
   }
 }
 boolean loadVoices(){
   // Read each voice duration. If counter is 0, read next note, else, do nothing
   boolean changed=false;
-  for (char i=0; i<N_BUZZERS; i++){
-    if (duracion[i]<=1){
+  for (char i=0; i<ACTIVE_VOICES; i++){
+    if (current_note_durations[i]<=1){
       changed=true;
-      // Puts the corresponding note on the buffer
+      // Puts the corresponding note on the progmem_buffer
       getNext(i);
       seteaNota(i);
     }
-    else duracion[i]--;
+    else current_note_durations[i]--;
   }
   return changed;
 }
@@ -512,16 +512,16 @@ void update(){
 }
 
 void initBuzzers(){
-  for (char i=0; i<N_BUZZERS; i++){
-    buzz[i]=i+2;
+  for (char i=0; i<ACTIVE_VOICES; i++){
+    voices_output_pins[i]=i+2;
     pinMode(i+2,OUTPUT);
   }
 }
 
 void initLeds(){
-  pinMode(rythmLed,OUTPUT);
-  pinMode(tempoLed,OUTPUT);
-  digitalWrite(tempoLed,HIGH);
+  pinMode(rhythm_led_pin,OUTPUT);
+  pinMode(tempo_led_pin,OUTPUT);
+  digitalWrite(tempo_led_pin,HIGH);
 }
 
 void setup(){
