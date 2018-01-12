@@ -20,7 +20,7 @@ Poliphonic chiptune-like music player. An arduino, some electronic elements, a s
 
 Here I propose a quick and dirty circuit that does the job of safely mixing the outputs. I added some more convenience components such as a volume knob.
 
-CIRCUIT
+![proposed setup sketch](/resources/proposed_sketch.png)
 
 ## Usage
 
@@ -30,9 +30,11 @@ CIRCUIT
 1. Load the program to your board
 1. Enjoy ;) Play with the tempo if you feel like it
 
-#### Listen to another preset song
+#### Change preset song
 
-Presets are defined as constant strings, as a set of voices. If you succeeded on loading and playing the program (sketch) you should've heard the Pokemon red/blue/yellow battle theme song! The song data is contained between the tags
+Presets are described as a set of constant strings, each one representing an individual voice. If you succeeded on loading and playing the program (sketch) you should've heard the Pokemon red/blue/yellow battle theme song! 
+
+The song data is contained on the code inside the following commented tags:
 
 ```cpp
 /**** PRESET MELODIES ****/
@@ -58,11 +60,14 @@ When finished, click **Generate**, copy and paste the resulting text to the sket
 
 The web app source is also available in this repo, so improvements are very welcome!
 
-## Warning
-* Arduino boards output voltages that are commonly logic 3.3V or 5V. This is **TOO MUCH VOLTAGE** for typical audio applications, so your output circuit should handle this to avoid blowing up your speakers, headphones, eardrums, windows... You're just a google search-away of knowing how to avoid this. 
-* If you use my proposed circuit, the more voices are singing at the same time, the higher the total peak to peak voltage at the mixed output. If you need it, evaluate implementing a compressor circuit before the actual audio output
 
-I cannot and won't be responsible for any damage you cause to your audio devices, yourself or someone else.
+> ## Warning
+> Arduino boards output voltages that are commonly logic 3.3V or 5V. This is **TOO MUCH VOLTAGE** for typical audio applications, so your output circuit should handle this to avoid blowing up your speakers, headphones, eardrums, windows... You're just a google search-away of knowing how to avoid this. If you use the proposed circuit, you should be safe. 
+> 
+> In the proposed circuit, the more voices are singing at the same time, the higher the total peak to peak voltage at the mixed output. If you need it, evaluate implementing a compressor circuit before the actual audio output.
+>
+> I cannot and won't be responsible for any damage you cause to your audio devices, yourself or someone else.
+
 
 ## Features
 
