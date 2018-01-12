@@ -70,6 +70,11 @@ The web app source is also available in this repo, so improvements are very welc
 
 
 ## Features
+* Multiple voices can be played at once
+* High accuracy tuning
+* Note range from G2 to D#8
+* Reduced parts required
+* Lightweight web melody editor
 
 
 ## TODO (maybe...)
