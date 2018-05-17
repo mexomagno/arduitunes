@@ -11,7 +11,7 @@ A poliphonic chiptune-like music player for the Arduino Uno!
 ## Usage
 
 1. Clone/download the project
-1. Load the arduitunes.ino file to your board. I personally use [PlatformIO](http://platformio.org/) that allows me to develop in my [current favorite IDE](https://www.jetbrains.com/clion/).
+1. Load the arduitunes.ino file to your board. I personally use [PlatformIO](http://platformio.org/) that allows me to develop in my [current favorite IDE](https://www.jetbrains.com/clion/). **Important**: You must have already installed the Arduino IDE v1.5.8 or newer.
 1. Set up your circuit. See my [proposed setup](#proposed-setup), but please, read the [**Warning**](#warning) section before building it.
 1. Load the program to your board
 1. Listen! Play with the tempo if you feel like it
@@ -26,9 +26,9 @@ This sketch's parts are:
 * An Arduino UNO board
 * Two potentiometers (tempo, volume)
 * Two LED diodes (tempo, sound indicator)
-* 7 300 ohm resistors. 5 for the passive mixer, 2 for the LEDs.
-* 1 1k ohm resistor
-* 1 10k ohm resistor
+* 7 300Ω resistors. 5 for the passive mixer, 2 for the LEDs.
+* 1 1kΩ resistor
+* 1 10kΩ resistor
 * 1 audio mono jack
 
 ## Changing the preset song
