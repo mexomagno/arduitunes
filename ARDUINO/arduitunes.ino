@@ -34,8 +34,9 @@ void doTick();
  *    Example: You can make it play a C major arpeggio two times with something like "||: 4C4 4E4 4G4 4C5 :|| X"
  *
  *    These rules are the same for each voice
+ */
 
-/*######################### PRESET MELODIES #########################*/
+/**** PRESET MELODIES ****/
 
 /** SUPER MARIO (ideal tempo: 200) **/
 
@@ -168,7 +169,7 @@ const char voice5_melody[] PROGMEM={
         "X"};
 */
 
-/*############################## END PRESET MELODIES ##############################*/
+/**** END PRESET MELODIES ****/
 
 
 const char *const all_melodies[] PROGMEM = {voice1_melody, voice2_melody, voice3_melody, voice4_melody, voice5_melody};
