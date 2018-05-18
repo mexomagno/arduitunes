@@ -4,9 +4,9 @@ A poliphonic chiptune-like music player for the Arduino Uno!
 
 ## Samples:
 
-[Pokemon Red, Blue and Yellow Trainer battle music](https://www.youtube.com/watch?v=Nx4-dWHNMjs)
-
-[Sweet Child of Mine](https://www.youtube.com/watch?v=4CrpFCbZ7Xw) by Jean Henrique, using **Arduitunes** and an electric arc speaker. Pretty cool.
+* [Pokemon Red, Blue and Yellow Trainer battle music](https://www.youtube.com/watch?v=Nx4-dWHNMjs)
+* [Super Mario Bros](https://youtu.be/CvvDUk5SBmg)
+* [Sweet Child of Mine](https://www.youtube.com/watch?v=4CrpFCbZ7Xw) by Jean Henrique, using **Arduitunes** and an electric arc speaker. Pretty cool.
 
 ## Usage
 
