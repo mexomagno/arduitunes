@@ -155,14 +155,14 @@
 			tdsil.setAttribute("colspan","6");
 			tdsil.setAttribute("style","border-right: 2px solid #DDDDEE;");
 			var silencio=document.createElement("div");
-			silencio.innerHTML="Silencios";
+			silencio.innerHTML="Toggle <strong>Rests</strong>";
 			silencio.setAttribute("id","silencio");
 			silencio.setAttribute("onClick","toggleSilencio();");
 			tdsil.appendChild(silencio);
 			var threp=document.createElement("th");
 			threp.setAttribute("colspan","2");
 			var rephd=document.createElement("div");
-			rephd.innerHTML="Repetir";
+			rephd.innerHTML="Repetition";
 			threp.appendChild(rephd);
 			var filasil=document.createElement("tr");
 			filasil.appendChild(tdsil);
@@ -177,7 +177,7 @@
 			/* mostrar el cambio en el botón*/
 			var botonSilencio=document.getElementById("silencio");
 			botonSilencio.setAttribute("style", silencio ? "background: #AAECAA;" : "");
-			botonSilencio.innerHTML=silencio ? "Notas" : "Silencios";
+			botonSilencio.innerHTML=silencio ? "Toggle <strong>Notes</strong>" : "Toggle <strong>Rests</strong>";
 			/* cambiar imágenes de botones*/
 			for (i=1;i<=32;i*=2){
 				var boton=document.getElementById("imagen_boton_duracion_"+i);
@@ -243,7 +243,7 @@
 				voz.setAttribute("id","voz"+i);
 				voz.setAttribute("class","voces");
 				voz.setAttribute("onClick","setVoz("+i+")");
-				voz.innerHTML="Voz "+i;
+				voz.innerHTML="Voice n°"+i;
 				col.appendChild(voz);
 				fila.appendChild(col);
 			}
@@ -291,7 +291,7 @@
 				/* crear el texto compatible con instrucciones para arduino*/
 				var respuesta="";
 				for (i=0;i<5;i++){
-					respuesta+='PROGMEM prog_char voz'+(i+1)+'[]={<br>"';
+					respuesta+='const char voice_melody' + (i + 1) + '[] PROGMEM = {"';
 					for (j=0;j<arrvoces[i].length;j++){
 						respuesta+=arrvoces[i][j]+' ';
 						if ((j+1)%40==0){
@@ -328,13 +328,13 @@
 						rep--;
 					}
 					if ((rep>=2)||(rep<=-1)){
-						window.alert("Voz "+(i+1)+": ¡No se admiten repeticiones anidadas!");
+						window.alert("Voz "+(i+1)+": Nested repetitions are not supported");
 						setVoz(i+1);
 						return false;
 					}
 				}
 				if (rep!=0){
-					window.alert("Debe cerrar la repetición de la voz "+(i+1));
+					window.alert("You must close voice "+(i+1) + "'s repetition");
 					setVoz(i+1);
 					return false;
 				}
@@ -349,7 +349,7 @@
 			}
 			 /* validar que haya alguna melodía*/
 			if (vacias==5){
-				window.alert("¡No ha ingresado ninguna melodía! :(");
+				window.alert("You haven't entered any note yet! :(");
 				return false;
 			}
 			return true;
@@ -411,18 +411,22 @@
 					<a class="tecla_negra prohibida" onClick="addNota('AS',1)"></a>
 					<a class="tecla_blanca prohibida" onClick="addNota('B',1)"></a>
 					
-					<div id="undo_wrap" style="float: right;"><div id="undo" onClick="undo();">BORRAR</div></div>
 					<div id="dummy"></div>
 					<div style="clear:both;"></div>
+
 				</div><!--teclado-->
 				<table id="tabla_botones_duracion"></table>
 				<table id="tabla_voces"></table>
-				<div id="display_notas_wrap">Previsualización: <br><div id="display_notas"></div></div>
+				<div>
+					<div id="undo_wrap" style="float: right;"><div id="undo" onClick="undo();"></div></div>
+					<div id="display_notas_wrap">Preview <br><div id="display_notas"></div></div>
+				</div>
 				<br>
-				<div id="generar" onClick="generar();">¡¡¡Generar!!!</div>
+				<div id="generar" onClick="generar();">Generate</div>
 				<div id="textarea_wrap" style="display: none;">
 					<br><br>
-					¡Copia y pega en el proyecto arduino!<br>
+					Copy and paste on <pre>arduitunes.ino</pre> file!
+					<br>
 					<pre><div id="texto"></div></pre>
 				</div>
 			</div>

@@ -1,4 +1,8 @@
 /* Teclas*/
+pre{
+	display: inline;
+	margin: 0;
+}
 #teclado{
 	margin-top: 80px;
 	margin-bottom: 100px;
@@ -55,7 +59,9 @@
 	background-color: #660000;
 	font-size:250%;
 	padding: 20px;
-	margin: auto;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
 	width: 55%;
 	box-shadow: inset 0px 0px 10px 20px #FFEFBB;
 	-moz-box-shadow: inset 0px 0px 10px 20px #FFEFBB;
@@ -64,6 +70,9 @@
 
  /* cuerpo */
  body{
+ 	padding: 0;
+ 	margin: 0;
+ 	height: 100%;
 	position: absolute;
 	font-family:"Helvetica";
 	text-align: center;
@@ -76,9 +85,7 @@
 #contenido{
 	border: 1px  solid #888899;
 	background-color: #FFEFBB;
-	padding: 30px;
-	padding-bottom: 40px;
-	margin-top: -20px;
+	height: 100%;
 	margin-left: 100px;
 	margin-right: 100px;
 	box-shadow: inset 0px 0px 15px 0px #444466;
@@ -128,9 +135,8 @@
 	background-color: #FFFFFF;
 	padding: 20px;
 	border: 1px solid #333333;
-	/*margin-left: 100px;
-	margin-right: 100px;*/
-	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
 	width: 60%;
 	overflow: hidden;
 	border-radius: 10px;
@@ -195,7 +201,7 @@
 	background-color: #ECABAA;
 	padding: 5px;
 	margin: 1px;
-	font-weight: bold;
+	font-weight: normal;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -206,21 +212,27 @@
 #silencio:hover{
 	background-color: #DDDEEF;
 }
+#undo_wrap {
+	width: 100%;
+}
 #undo{
+	float:right;
 	background-color: #FFCC00;	
 	margin-right: 20px;
-	margin-left: -120px;
+	margin-left: 20px;
 	margin-bottom: -80px;
-	padding: 30px;
+	height: 30px;
+	width: 50px;
+	padding: 10px;
 	border: 1px solid #DD8800;
 	font-weight: bolder;
 	color: #665500;
-	border-radius: 50px;
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
+	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px #AAAAAA;
 	-moz-box-shadow: 0px 0px 10px 0px #AAAAAA;
 	-webkit-box-shadow: 0px 0px 10px 0px #AAAAAA;
+	background: url(images/backspace.png) no-repeat center center;
+	background-size: 30px;
 }
 #undo:hover{
 	color: #AA9922;
@@ -281,7 +293,9 @@
 	letter-spacing: -1px;
 	font-size: 50%;
 	padding: 10px;
-	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
 	width: 80%;
 	border: 1px dashed #999999;
 	border-radius: 5px;
