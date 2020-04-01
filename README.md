@@ -59,7 +59,7 @@ Included tunes are:
 
 ## Making your own tunes
 
-Songs are declared as [RTTTL](https://en.wikipedia.org/wiki/Ring_Tone_Transfer_Language)-like strings for each voice. I created an [ugly but functional webapp](http://www.dcc.uchile.cl/~acastro/arduitunes) which is a somehow easy way to create tunes. I actually used it to create most of the preset tunes.
+Songs are declared as [RTTTL](https://en.wikipedia.org/wiki/Ring_Tone_Transfer_Language)-like strings for each voice. I created an [ugly but functional webapp](http://mexomagno.github.io/arduitunes/editor.html) which is a somehow easy way to create tunes. I actually used it to create most of the preset tunes.
 
 When done, click **Generate**, copy and paste the resulting text to the sketch, and load it to your board. Remember to define only one tune at a time when loading the code.
 
